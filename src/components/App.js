@@ -1,6 +1,9 @@
 import React from 'react';
-import { Router, Route, Switch } from 'react-router-dom';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
+
+import Header from './Header';
+import Footer from './Footer';
 
 import Goods from './goods/index';
 import GoodsDetail from './goods/GoodsDetail';
@@ -15,7 +18,8 @@ class App extends React.Component {
     // Global routes settings
     return (
       <div>
-        <Router history={createBrowserHistory()}>
+        <Header />
+        <HashRouter history={createBrowserHistory()}>
           <Switch />
           <Route path="/" exact component={Goods} />
           <Route path="/goods" exact component={Goods} />
@@ -25,7 +29,8 @@ class App extends React.Component {
           <Route path="/administer" exact component={Administer} />
           <Route path="/login" exact component={Login} />
           <Route path="/register" exact component={Register} />
-        </Router>
+        </HashRouter>
+        <Footer />
       </div>
     );
   }
