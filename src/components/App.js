@@ -2,6 +2,10 @@ import React from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
+import 'semantic-ui-css/semantic.min.css';
+
+import { Container } from 'semantic-ui-react';
+
 import Header from './Header';
 import Footer from './Footer';
 
@@ -17,9 +21,12 @@ class App extends React.Component {
   render() {
     // Global routes settings
     return (
-      <div>
+      <HashRouter
+        onUpdate={() => window.scrollTo(0, 0)}
+        history={createBrowserHistory()}
+      >
         <Header />
-        <HashRouter history={createBrowserHistory()}>
+        <Container style={{ marginTop: '5em' }}>
           <Switch />
           <Route path="/" exact component={Goods} />
           <Route path="/goods" exact component={Goods} />
@@ -29,9 +36,9 @@ class App extends React.Component {
           <Route path="/administer" exact component={Administer} />
           <Route path="/login" exact component={Login} />
           <Route path="/register" exact component={Register} />
-        </HashRouter>
+        </Container>
         <Footer />
-      </div>
+      </HashRouter>
     );
   }
 }
