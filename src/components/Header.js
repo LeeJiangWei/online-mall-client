@@ -3,12 +3,19 @@ import { Link } from 'react-router-dom';
 import { Menu, Container, Icon } from 'semantic-ui-react';
 
 class Header extends React.Component {
-  state = { activeItem: 'goods' };
+  state = { activeItem: 'goods', isLogin: false };
+
+  componentDidMount() {}
+
+  static getDerivedStateFromProps(props, state) {
+    return { isLogin: props.isLogin };
+  }
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name });
 
   render() {
     const { activeItem } = this.state;
+    const status = this.state.isLogin === true ? 'logout' : 'login';
 
     return (
       <div>
@@ -45,7 +52,13 @@ class Header extends React.Component {
               onClick={this.handleItemClick}
             />
             <Menu.Menu position="right">
-              <Menu.Item name="logout" onClick={this.handleItemClick} />
+              <Menu.Item
+                name={status}
+                as={Link}
+                to={'/' + status}
+                active={activeItem === status}
+                onClick={this.handleItemClick}
+              />
             </Menu.Menu>
           </Container>
         </Menu>

@@ -14,6 +14,7 @@ let fakeGoods = [];
 
 for (let i = 0; i < 9; i++) {
   fakeGoods.push({
+    id: i,
     img: faker.image.image(),
     name: faker.commerce.productName(),
     cat: faker.commerce.department(),
@@ -22,11 +23,15 @@ for (let i = 0; i < 9; i++) {
 }
 
 class Goods extends React.Component {
+  onCardClicked = id => {
+    this.props.history.push(`/goods/${id}`);
+  };
+
   renderList(goods) {
     return goods.map(good => {
       return (
-        <Grid.Column>
-          <Card>
+        <Grid.Column key={good.name}>
+          <Card onClick={() => this.onCardClicked(good.id)}>
             <Image src={good.img} />
             <Card.Content>
               <Card.Header>{good.name}</Card.Header>
