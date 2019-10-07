@@ -7,7 +7,13 @@ const server = axios.create({
 });
 
 export const getStatus = async () => {
-  return await server.get('/status');
+  const res = await server.get('/user/status');
+
+  if (res.status === 200) {
+    return res.data;
+  }
+
+  return res;
 };
 
 export const login = async (usn, psw) => {

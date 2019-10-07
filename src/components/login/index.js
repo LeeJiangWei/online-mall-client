@@ -30,6 +30,7 @@ class Login extends React.Component {
     if (message === 'success') {
       this.props.setAppState({ isLogin: true, userState: userState });
       this.props.history.goBack();
+      window.alert('Login successfully!');
     }
   };
 

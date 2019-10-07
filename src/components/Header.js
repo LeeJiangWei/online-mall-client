@@ -5,25 +5,23 @@ import { Menu, Container, Icon } from 'semantic-ui-react';
 import { logout } from '../utils/api';
 
 class Header extends React.Component {
-  state = { activeItem: 'goods', isLogin: false };
+  state = { activeItem: 'goods', isLogin: false, userId: -1 };
 
   componentDidMount() {
-    console.log(this.props);
     this.setState({
       activeItem: this.props.location.pathname.split('/')[1]
     });
-    console.log(this.state);
   }
 
   static getDerivedStateFromProps(props, state) {
-    return { isLogin: props.isLogin };
+    return { isLogin: props.isLogin, userId: props.user.userId };
   }
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name });
 
   onLogoutClick = async () => {
     const res = await logout();
-    console.log(res.message);
+    window.alert(res.message);
     this.props.setAppState({ isLogin: false });
   };
 
@@ -77,7 +75,7 @@ class Header extends React.Component {
             />
             <Menu.Item
               as={Link}
-              to="/user/1"
+              to={`/user/${this.state.userId}`}
               name="user"
               active={activeItem === 'user'}
               onClick={this.handleItemClick}

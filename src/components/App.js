@@ -2,7 +2,6 @@ import React from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 
 import 'semantic-ui-css/semantic.min.css';
-
 import { Container } from 'semantic-ui-react';
 
 import Header from './Header';
@@ -17,10 +16,23 @@ import Administer from './administer/index';
 import Login from './login/index';
 import Register from './register/index';
 
-class App extends React.Component {
-  state = { isLogin: false, userId: -1, userState: -1 };
+import { getStatus } from '../utils/api';
 
-  componentDidMount() {}
+class App extends React.Component {
+  state = {
+    isLogin: false,
+    user: {
+      userId: -1,
+      userState: -1
+    }
+  };
+
+  async componentDidMount() {
+    const res = await getStatus();
+    if (res) {
+      this.setState({ isLogin: true, user: res.user });
+    }
+  }
 
   setAppState = appState => {
     this.setState(appState);
@@ -50,9 +62,7 @@ class App extends React.Component {
               <Route
                 path="/user/:userId"
                 exact
-                render={props => (
-                  <User {...props} isLogin={this.state.isLogin} />
-                )}
+                render={props => <User {...props} {...this.state} />}
               />
               <Route path="/administer" exact component={Administer} />
               <Route
