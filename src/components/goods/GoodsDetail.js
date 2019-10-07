@@ -1,5 +1,5 @@
-import React from "react";
-import axios from "axios";
+import React from 'react';
+import axios from 'axios';
 import {
   Button,
   Grid,
@@ -9,7 +9,7 @@ import {
   Segment,
   Divider,
   Container
-} from "semantic-ui-react";
+} from 'semantic-ui-react';
 
 class GoodsDetail extends React.Component {
   constructor(props) {
@@ -40,9 +40,9 @@ class GoodsDetail extends React.Component {
   componentDidMount() {
     const that = this;
     axios
-      .get("/api/goods/" + this.state.goodsId)
+      .get('/api/goods/' + this.state.goodsId)
       .then(function(res) {
-        if (res.data.message === "success") {
+        if (res.data.message === 'success') {
           that.setState({
             goods: res.data.goods,
             seller: res.data.seller
@@ -68,7 +68,7 @@ class GoodsDetail extends React.Component {
             <div>
               <Header as="h1">{goods.goodsName}</Header>
               <Header as="h3">
-                State: {goods.goodsState === 1 ? "in stock" : "sold out"}
+                State: {goods.goodsState === 1 ? 'in stock' : 'sold out'}
               </Header>
               <Header as="h3">Category: {goods.category}</Header>
               <Header as="h3">Price: ￥{goods.price}</Header>
