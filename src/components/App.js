@@ -17,6 +17,7 @@ import Login from './login/index';
 import Register from './register/index';
 
 import { getStatus } from '../utils/api';
+import axios from 'axios';
 
 class App extends React.Component {
   state = {
@@ -27,12 +28,13 @@ class App extends React.Component {
     }
   };
 
-  async componentDidMount() {
-    const res = await getStatus();
-    if (res) {
-      this.setState({ isLogin: true, user: res.user });
-    }
-  }
+  componentDidMount = () => {
+    axios.get('/api/user/status').then(res => {
+      if (res.data.user) {
+        this.setState({ isLogin: true, user: res.data.user });
+      }
+    });
+  };
 
   setAppState = appState => {
     this.setState(appState);
