@@ -1,21 +1,21 @@
-import React from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import React from "react";
+import { HashRouter, Route, Switch } from "react-router-dom";
 
-import 'semantic-ui-css/semantic.min.css';
+import "semantic-ui-css/semantic.min.css";
 
-import { Container } from 'semantic-ui-react';
+import { Container } from "semantic-ui-react";
 
-import Header from './Header';
-import Footer from './Footer';
-import ScrollToTop from './ScrollToTop';
+import Header from "./Header";
+import Footer from "./Footer";
+import ScrollToTop from "./ScrollToTop";
 
-import Goods from './goods/index';
-import GoodsDetail from './goods/GoodsDetail';
-import Order from './order/index';
-import User from './user/index';
-import Administer from './administer/index';
-import Login from './login/index';
-import Register from './register/index';
+import Goods from "./goods/index";
+import GoodsDetail from "./goods/GoodsDetail";
+import Order from "./order/index";
+import User from "./user/index";
+import Administer from "./administer/index";
+import Login from "./login/index";
+import Register from "./register/index";
 
 class App extends React.Component {
   state = { isLogin: false, userId: -1, userState: -1 };
@@ -31,7 +31,7 @@ class App extends React.Component {
     return (
       <HashRouter>
         <ScrollToTop>
-          <Container style={{ marginTop: '5em', minHeight: '80vh' }}>
+          <Container style={{ marginTop: "5em", minHeight: "80vh" }}>
             <Route
               path="/"
               render={props => (
