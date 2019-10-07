@@ -20,7 +20,6 @@ class Header extends React.Component {
 
   handleItemClick = (e, { name }) => {
     this.setState({ activeItem: name });
-    console.log(this.props);
   };
 
   onLogoutClick = async () => {

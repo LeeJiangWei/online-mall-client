@@ -20,7 +20,7 @@ import Register from './register/index';
 
 class App extends React.Component {
   componentDidMount = () => {
-    getStatus();
+    this.props.getStatus();
   };
 
   render() {

@@ -3,7 +3,7 @@ import axios from 'axios';
 export const getStatus = () => async dispatch => {
   const res = await axios.get('/api/user/status');
 
-  if (res.data.userId) {
+  if (res.data.user) {
     dispatch({
       type: 'USER_STATUS',
       payload: true
@@ -11,7 +11,7 @@ export const getStatus = () => async dispatch => {
 
     dispatch({
       type: 'USER',
-      payload: res.data
+      payload: res.data.user
     });
   } else {
     dispatch({
