@@ -22,3 +22,13 @@ export const login = async (usn, psw) => {
 
   return res;
 };
+
+export const logout = async () => {
+  const res = await server.get('/user/logout');
+
+  if (res.status === 200) {
+    return res.data;
+  }
+
+  return res;
+};

@@ -26,9 +26,10 @@ class Login extends React.Component {
 
   onSubmit = async e => {
     const res = await login(this.state.username, this.state.password);
-    if (res.message === 'success') {
-      // console.log(res);
-      this.props.setAppState({ isLogin: true, userState: 5 });
+    const { message, userState } = res;
+    if (message === 'success') {
+      this.props.setAppState({ isLogin: true, userState: userState });
+      this.props.history.goBack();
     }
   };
 

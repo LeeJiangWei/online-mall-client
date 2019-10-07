@@ -31,8 +31,17 @@ class App extends React.Component {
     return (
       <HashRouter>
         <ScrollToTop>
-          <Header {...this.state} />
           <Container style={{ marginTop: '5em', minHeight: '80vh' }}>
+            <Route
+              path="/"
+              render={props => (
+                <Header
+                  {...props}
+                  {...this.state}
+                  setAppState={this.setAppState}
+                />
+              )}
+            />
             <Switch>
               <Route path="/" exact component={Goods} />
               <Route path="/goods" exact component={Goods} />
