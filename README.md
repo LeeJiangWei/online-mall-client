@@ -3,16 +3,22 @@
 + /
     + list of all goods
     
-+ /goods/:goodsId
-    + information of a particular goods
++ /goods/new
+    + add new goods
     
++ /goods/:goodsId
+    + information of particular goods
+    
++ /order
+    + order list
+   
 + /order/:orderId
     + information of a particular order
 
 + /user/:userId
     + personal information
     + selling goods list
-    + order list
+    + statistic
     
 + /administer
     + list of all users
