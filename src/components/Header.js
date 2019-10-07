@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { Menu, Container, Icon } from 'semantic-ui-react';
 
-import { logout } from '../utils/api';
+import { logout } from '../actions';
 
 class Header extends React.Component {
   state = { activeItem: 'goods', isLogin: false, userId: -1 };
@@ -13,16 +14,18 @@ class Header extends React.Component {
     });
   }
 
-  static getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps(props) {
     return { isLogin: props.isLogin, userId: props.user.userId };
   }
 
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name });
+  handleItemClick = (e, { name }) => {
+    this.setState({ activeItem: name });
+    console.log(this.props);
+  };
 
   onLogoutClick = async () => {
-    const res = await logout();
-    window.alert(res.message);
-    this.props.setAppState({ isLogin: false });
+    const message = await this.props.logout();
+    window.alert(message);
   };
 
   renderLoginOrLogout = () => {
@@ -88,4 +91,11 @@ class Header extends React.Component {
   }
 }
 
-export default Header;
+const mapStateToProps = state => {
+  return state;
+};
+
+export default connect(
+  mapStateToProps,
+  { logout }
+)(Header);

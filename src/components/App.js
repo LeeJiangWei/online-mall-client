@@ -1,5 +1,7 @@
 import React from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { getStatus } from '../actions';
 
 import 'semantic-ui-css/semantic.min.css';
 import { Container } from 'semantic-ui-react';
@@ -16,28 +18,9 @@ import Administer from './administer/index';
 import Login from './login/index';
 import Register from './register/index';
 
-import { getStatus } from '../utils/api';
-import axios from 'axios';
-
 class App extends React.Component {
-  state = {
-    isLogin: false,
-    user: {
-      userId: -1,
-      userState: -1
-    }
-  };
-
   componentDidMount = () => {
-    axios.get('/api/user/status').then(res => {
-      if (res.data.user) {
-        this.setState({ isLogin: true, user: res.data.user });
-      }
-    });
-  };
-
-  setAppState = appState => {
-    this.setState(appState);
+    getStatus();
   };
 
   render() {
@@ -46,38 +29,15 @@ class App extends React.Component {
       <HashRouter>
         <ScrollToTop>
           <Container style={{ marginTop: '5em', minHeight: '80vh' }}>
-            <Route
-              path="/"
-              render={props => (
-                <Header
-                  {...props}
-                  {...this.state}
-                  setAppState={this.setAppState}
-                />
-              )}
-            />
+            <Route path="/" component={Header} />
             <Switch>
               <Route path="/" exact component={Goods} />
               <Route path="/goods" exact component={Goods} />
               <Route path="/goods/:goodsId" exact component={GoodsDetail} />
               <Route path="/order" exact component={Order} />
-              <Route
-                path="/user/:userId"
-                exact
-                render={props => <User {...props} {...this.state} />}
-              />
+              <Route path="/user/:userId" exact component={User} />
               <Route path="/administer" exact component={Administer} />
-              <Route
-                path="/login"
-                exact
-                render={props => (
-                  <Login
-                    {...props}
-                    {...this.state}
-                    setAppState={this.setAppState}
-                  />
-                )}
-              />
+              <Route path="/login" exact component={Login} />
               <Route path="/register" exact component={Register} />
             </Switch>
           </Container>
@@ -88,4 +48,7 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default connect(
+  null,
+  { getStatus }
+)(App);

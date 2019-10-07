@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import {
   Button,
   Form,
@@ -9,7 +10,7 @@ import {
   Segment
 } from 'semantic-ui-react';
 
-import { login } from '../../utils/api';
+import { login } from '../../actions';
 
 class Login extends React.Component {
   state = { username: '', password: '' };
@@ -24,13 +25,17 @@ class Login extends React.Component {
     this.setState({ password: e.target.value });
   };
 
-  onSubmit = async e => {
-    const res = await login(this.state.username, this.state.password);
-    const { message, userState } = res;
+  onSubmit = async () => {
+    const message = await this.props.login(
+      this.state.username,
+      this.state.password
+    );
+
     if (message === 'success') {
-      this.props.setAppState({ isLogin: true, userState: userState });
-      this.props.history.goBack();
       window.alert('Login successfully!');
+      this.props.history.goBack();
+    } else {
+      window.alert(message);
     }
   };
 
@@ -78,4 +83,7 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+export default connect(
+  null,
+  { login }
+)(Login);
