@@ -11,7 +11,8 @@ const userReducers = (state = { userId: -1 }, action) => {
   }
 };
 
-const statusReducers = (state = false, action) => {
+// 0: not login 1: login 2: unknown
+const statusReducers = (state = 2, action) => {
   if (action.type === 'USER_STATUS') {
     return action.payload;
   } else {
@@ -20,6 +21,6 @@ const statusReducers = (state = false, action) => {
 };
 
 export default combineReducers({
-  isLogin: statusReducers,
+  status: statusReducers,
   user: userReducers
 });

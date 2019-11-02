@@ -15,7 +15,11 @@ import { login } from '../../actions';
 class Login extends React.Component {
   state = { username: '', password: '' };
 
-  componentDidMount() {}
+  componentDidMount() {
+    if (this.props.isLogin) {
+      this.props.history.goBack();
+    }
+  }
 
   onUsernameChange = e => {
     this.setState({ username: e.target.value });
@@ -83,7 +87,11 @@ class Login extends React.Component {
   }
 }
 
+const mapStateToProps = state => {
+  return state;
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   { login }
 )(Login);

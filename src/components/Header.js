@@ -6,7 +6,7 @@ import { Menu, Container, Icon } from 'semantic-ui-react';
 import { logout } from '../actions';
 
 class Header extends React.Component {
-  state = { activeItem: 'goods', isLogin: false, userId: -1 };
+  state = { activeItem: 'goods', status: 2, userId: -1 };
 
   componentDidMount() {
     this.setState({
@@ -15,7 +15,7 @@ class Header extends React.Component {
   }
 
   static getDerivedStateFromProps(props) {
-    return { isLogin: props.isLogin, userId: props.user.userId };
+    return { status: props.status, userId: props.user.userId };
   }
 
   handleItemClick = (e, { name }) => {
@@ -23,6 +23,7 @@ class Header extends React.Component {
   };
 
   onLogoutClick = async () => {
+    this.props.history.push('/login');
     const message = await this.props.logout();
     window.alert(message);
   };
@@ -30,7 +31,7 @@ class Header extends React.Component {
   renderLoginOrLogout = () => {
     const { activeItem } = this.state;
 
-    if (this.state.isLogin === true) {
+    if (this.state.status === 1) {
       return <Menu.Item name="logout" onClick={this.onLogoutClick} />;
     } else {
       return (

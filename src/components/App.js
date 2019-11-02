@@ -10,13 +10,13 @@ import Header from './Header';
 import Footer from './Footer';
 import ScrollToTop from './ScrollToTop';
 
-import Goods from './goods/index';
+import Goods from './goods';
 import GoodsDetail from './goods/GoodsDetail';
-import Order from './order/index';
-import User from './user/index';
-import Administer from './administer/index';
-import Login from './login/index';
-import Register from './register/index';
+import Order from './order';
+import User from './user';
+import Administer from './administer';
+import Login from './login';
+import Register from './register';
 
 class App extends React.Component {
   componentDidMount = () => {

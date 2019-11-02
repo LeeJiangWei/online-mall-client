@@ -6,7 +6,7 @@ export const getStatus = () => async dispatch => {
   if (res.data.user) {
     dispatch({
       type: 'USER_STATUS',
-      payload: true
+      payload: 1
     });
 
     dispatch({
@@ -16,7 +16,7 @@ export const getStatus = () => async dispatch => {
   } else {
     dispatch({
       type: 'USER_STATUS',
-      payload: false
+      payload: 0
     });
   }
 };
@@ -32,7 +32,7 @@ export const login = (usn, psw) => async dispatch => {
   if (message === 'success') {
     dispatch({
       type: 'USER_STATUS',
-      payload: true
+      payload: 1
     });
 
     dispatch({
@@ -54,7 +54,7 @@ export const logout = () => async dispatch => {
   if (res.status === 200) {
     dispatch({
       type: 'USER_STATUS',
-      payload: false
+      payload: 0
     });
 
     dispatch({
