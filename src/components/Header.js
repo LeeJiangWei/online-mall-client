@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Menu, Container, Icon } from 'semantic-ui-react';
 
-import { logout } from '../actions';
+import { logout, setGlobalPortal } from '../actions';
 
 class Header extends React.Component {
   state = { activeItem: 'goods', status: 2, userId: -1 };
@@ -23,9 +23,10 @@ class Header extends React.Component {
   };
 
   onLogoutClick = async () => {
-    this.props.history.push('/login');
     const message = await this.props.logout();
-    window.alert(message);
+    this.props.setGlobalPortal(true, 'info', 'success', message);
+    this.props.history.push('/login');
+    //window.alert(message);
   };
 
   renderLoginOrLogout = () => {
@@ -97,5 +98,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { logout }
+  { logout, setGlobalPortal }
 )(Header);

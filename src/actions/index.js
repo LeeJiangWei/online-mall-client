@@ -1,4 +1,5 @@
 import axios from 'axios';
+export * from './setGlobalPortal';
 
 export const getStatus = () => async dispatch => {
   const res = await axios.get('/api/user/status');

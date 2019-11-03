@@ -20,7 +20,23 @@ const statusReducers = (state = 2, action) => {
   }
 };
 
+const PORTAL_INIT_STATE = {
+  open: false,
+  color: '',
+  header: '',
+  body: ''
+};
+
+const portalReducers = (state = PORTAL_INIT_STATE, action) => {
+  if (action.type === 'SET_PORTAL') {
+    return { ...state, ...action.payload };
+  } else {
+    return state;
+  }
+};
+
 export default combineReducers({
   status: statusReducers,
-  user: userReducers
+  user: userReducers,
+  portal: portalReducers
 });
