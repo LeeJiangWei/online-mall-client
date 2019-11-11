@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
 import {
   Button,
   Form,
@@ -9,9 +10,9 @@ import {
   Image,
   Segment,
   Divider,
-  Select,
   Container
 } from 'semantic-ui-react';
+import { login, setGlobalPortal } from '../../actions';
 
 const options = [
   { key: 1, text: 'On sale', value: 1 },
@@ -30,18 +31,11 @@ class EditGoods extends React.Component {
         description: '',
         goodsId: -1,
         goodsName: '',
-        goodsState: 0,
+        goodsState: 1,
         picture: '',
         postTime: '',
         price: 0.0,
         userId: 0
-      },
-      seller: {
-        userId: 0,
-        userName: '',
-        address: '',
-        phoneNumber: '',
-        userState: 0
       }
     };
   }
@@ -50,10 +44,49 @@ class EditGoods extends React.Component {
     let goods = { ...this.state.goods };
     goods[e.target.name] = e.target.value;
     this.setState({ goods });
-    console.log(this.state.goods);
   };
 
-  submitData() {}
+  onSelectChange = (e, { value }) => {
+    let goods = { ...this.state.goods };
+    goods.goodsState = value;
+    this.setState({ goods });
+  };
+
+  submitData = () => {
+    console.log(this.state.goods);
+    const submitUrl = this.state.isCreatingNewGoods
+      ? '/api/goods/add'
+      : `/api/goods/${this.state.goodsId}`;
+    const that = this;
+    axios.post(submitUrl, this.state.goods).then(res => {
+      if (res.data.message === 'success') {
+        this.props.setGlobalPortal(true, 'info', 'Success', 'Ok');
+        that.clearData();
+      } else {
+        this.props.setGlobalPortal(
+          true,
+          'negative',
+          'Failure',
+          res.data.message
+        );
+      }
+    });
+  };
+
+  clearData = () => {
+    const goods = {
+      category: '',
+      description: '',
+      goodsId: -1,
+      goodsName: '',
+      goodsState: 1,
+      picture: '',
+      postTime: '',
+      price: 0.0,
+      userId: 0
+    };
+    this.setState({ goods });
+  };
 
   componentDidMount() {
     const that = this;
@@ -63,8 +96,7 @@ class EditGoods extends React.Component {
         .then(function(res) {
           if (res.data.message === 'success') {
             that.setState({
-              goods: res.data.goods,
-              seller: res.data.seller
+              goods: res.data.goods
             });
           } else {
             console.error(res.data.message);
@@ -120,7 +152,7 @@ class EditGoods extends React.Component {
                     label="State"
                     name="goodsState"
                     value={this.state.goods.goodsState}
-                    onChange={this.onInputChange}
+                    onChange={this.onSelectChange}
                     options={options}
                     placeholder="State"
                   />
@@ -146,13 +178,13 @@ class EditGoods extends React.Component {
             </Container>
             <Divider horizontal>EDIT</Divider>
             <Container textAlign="center">
-              <Button animated="fade" size="large">
+              <Button animated="fade" size="large" onClick={this.clearData}>
                 <Button.Content hidden>RESET</Button.Content>
                 <Button.Content visible>
                   <Icon name="undo" />
                 </Button.Content>
               </Button>
-              <Button animated="fade" size="large" onClick={this.submitData()}>
+              <Button animated="fade" size="large" onClick={this.submitData}>
                 <Button.Content hidden>SUBMIT</Button.Content>
                 <Button.Content visible>
                   <Icon name="send" />
@@ -166,4 +198,7 @@ class EditGoods extends React.Component {
   }
 }
 
-export default EditGoods;
+export default connect(
+  null,
+  { setGlobalPortal }
+)(EditGoods);
