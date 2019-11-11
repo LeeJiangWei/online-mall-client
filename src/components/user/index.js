@@ -1,7 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import { Grid, Container, Segment, Image, Header } from 'semantic-ui-react';
+import {
+  Grid,
+  Container,
+  Segment,
+  Image,
+  Header,
+  Item,
+  Divider,
+  Button,
+  Icon,
+  Statistic
+} from 'semantic-ui-react';
 import { setGlobalPortal } from '../../actions';
 
 class User extends React.Component {
@@ -33,19 +44,19 @@ class User extends React.Component {
     const { userId, userName, address, phoneNumber } = this.props.user;
     return (
       <Segment>
-        <Grid>
-          <Grid.Column width={6}>
+        <Grid columns={2}>
+          <Grid.Column width={8}>
             <Image
               src="https://react.semantic-ui.com/images/wireframe/square-image.png"
-              size="medium"
+              size="small"
               rounded
             />
           </Grid.Column>
-          <Grid.Column width={10}>
+          <Grid.Column width={8}>
             <Header as="h1">{userName}</Header>
-            <Header as="h3">{userId}</Header>
-            <Header as="h3">{address}</Header>
-            <Header as="h3">{phoneNumber}</Header>
+            <p>ID: {userId}</p>
+            <p>Address: {address}</p>
+            <p>Phone Number: {phoneNumber}</p>
           </Grid.Column>
         </Grid>
       </Segment>
@@ -53,11 +64,58 @@ class User extends React.Component {
   }
 
   renderSellingGoods() {
-    return <Segment>Selling</Segment>;
+    console.log(this.state);
+    return (
+      <Segment>
+        <Header as="h2">Selling goods</Header>
+        <Divider />
+        <Item.Group>
+          {this.state.goods.map(
+            ({ goodsName, goodsId, category, price, picture }) => {
+              return (
+                <Item key={goodsId}>
+                  <Image size="tiny" src={picture} />
+                  <Item.Content verticalAlign="middle">
+                    <Grid>
+                      <Grid.Column width={4}>
+                        <Header size="huge" as="a">
+                          {goodsName}
+                        </Header>
+                        <p>{category}</p>
+                      </Grid.Column>
+                      <Grid.Column width={5} verticalAlign="middle">
+                        <Container text>
+                          <Header as="h3">price: {price}</Header>
+                        </Container>
+                      </Grid.Column>
+                      <Grid.Column width={7} verticalAlign="middle">
+                        <Button>Edit</Button>
+                        <Button>Unmount</Button>
+                        <Button icon color="red">
+                          <Icon name="trash" />
+                        </Button>
+                      </Grid.Column>
+                    </Grid>
+                  </Item.Content>
+                </Item>
+              );
+            }
+          )}
+        </Item.Group>
+      </Segment>
+    );
   }
 
   renderStatistic() {
-    return <Segment>Statistic</Segment>;
+    return (
+      <Segment>
+        <Header as="h3">Statistic</Header>
+        <Divider />
+        <Container textAlign="center">
+          <Statistic label="Your goods" value={this.state.goods.length} />
+        </Container>
+      </Segment>
+    );
   }
 
   render() {
@@ -75,10 +133,12 @@ class User extends React.Component {
     // Get params in url
     return (
       <Container>
-        {this.renderUserCard()}
         <Grid>
+          <Grid.Column width={6}>
+            {this.renderUserCard()}
+            {this.renderStatistic()}
+          </Grid.Column>
           <Grid.Column width={10}>{this.renderSellingGoods()}</Grid.Column>
-          <Grid.Column width={6}>{this.renderStatistic()}</Grid.Column>
         </Grid>
       </Container>
     );
