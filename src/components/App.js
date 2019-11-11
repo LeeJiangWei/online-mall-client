@@ -12,6 +12,7 @@ import ScrollToTop from './ScrollToTop';
 
 import Goods from './goods';
 import GoodsDetail from './goods/GoodsDetail';
+import EditGoods from './goods/EditGoods';
 import Order from './order';
 import User from './user';
 import Administer from './administer';
@@ -33,7 +34,9 @@ class App extends React.Component {
             <Switch>
               <Route path="/" exact component={Goods} />
               <Route path="/goods" exact component={Goods} />
+              <Route path="/goods/new" exact component={EditGoods} />
               <Route path="/goods/:goodsId" exact component={GoodsDetail} />
+              <Route path="/goods/edit/:goodsId" exact component={EditGoods} />
               <Route path="/order" exact component={Order} />
               <Route path="/user/:userId" exact component={User} />
               <Route path="/administer" exact component={Administer} />
