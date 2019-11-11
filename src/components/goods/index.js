@@ -8,42 +8,44 @@ import {
   Icon,
   Image
 } from 'semantic-ui-react';
-import faker from 'faker';
-
-let fakeGoods = [];
-
-for (let i = 0; i < 9; i++) {
-  fakeGoods.push({
-    id: i,
-    img: faker.image.image(),
-    name: faker.commerce.productName(),
-    cat: faker.commerce.department(),
-    des: faker.lorem.sentence()
-  });
-}
+import axios from 'axios';
 
 class Goods extends React.Component {
+  state = { goods: [] };
+
+  async componentDidMount() {
+    try {
+      const { data } = await axios.get('/api/goods/');
+      const { message, goods } = data;
+      if (message === 'success') {
+        this.setState({ goods });
+      }
+    } catch (e) {}
+  }
+
   onCardClicked = id => {
     this.props.history.push(`/goods/${id}`);
   };
 
-  renderList(goods) {
-    return goods.map(good => {
-      return (
-        <Grid.Column key={good.name}>
-          <Card onClick={() => this.onCardClicked(good.id)}>
-            <Image src={good.img} />
-            <Card.Content>
-              <Card.Header>{good.name}</Card.Header>
-              <Card.Meta>{good.cat}</Card.Meta>
-              <Card.Description style={{ height: '3em' }}>
-                {good.des}
-              </Card.Description>
-            </Card.Content>
-          </Card>
-        </Grid.Column>
-      );
-    });
+  renderList() {
+    return this.state.goods.map(
+      ({ goodsName, price, picture, goodsId, category }) => {
+        return (
+          <Grid.Column key={goodsId}>
+            <Card onClick={() => this.onCardClicked(goodsId)}>
+              <Image src={picture} />
+              <Card.Content>
+                <Card.Header>{goodsName}</Card.Header>
+                <Card.Meta>{category}</Card.Meta>
+                <Card.Description style={{ height: '3em' }}>
+                  Price: {price}
+                </Card.Description>
+              </Card.Content>
+            </Card>
+          </Grid.Column>
+        );
+      }
+    );
   }
 
   render() {
@@ -56,13 +58,13 @@ class Goods extends React.Component {
           </Header>
           <Header floated="right">
             <Statistic>
-              <Statistic.Value>4,396</Statistic.Value>
+              <Statistic.Value>{this.state.goods.length}</Statistic.Value>
               <Statistic.Label>Goods on sale</Statistic.Label>
             </Statistic>
           </Header>
         </Segment>
         <Segment vertical>
-          <Grid columns={4}>{this.renderList(fakeGoods)}</Grid>
+          <Grid columns={4}>{this.renderList()}</Grid>
         </Segment>
       </>
     );

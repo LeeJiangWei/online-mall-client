@@ -14,6 +14,7 @@ import {
   Statistic
 } from 'semantic-ui-react';
 import { setGlobalPortal } from '../../actions';
+import { Link } from 'react-router-dom';
 
 class User extends React.Component {
   state = { status: 2, user: {}, goods: [] };
@@ -41,7 +42,7 @@ class User extends React.Component {
   }
 
   renderUserCard() {
-    const { userId, userName, address, phoneNumber } = this.props.user;
+    const { userId, userName, address, phoneNumber } = this.state.user;
     return (
       <Segment>
         <Grid columns={2}>
@@ -68,6 +69,9 @@ class User extends React.Component {
     return (
       <Segment>
         <Header as="h2">Selling goods</Header>
+        <Button as={Link} to="/goods/new">
+          New
+        </Button>
         <Divider />
         <Item.Group>
           {this.state.goods.map(
