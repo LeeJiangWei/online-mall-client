@@ -10,7 +10,7 @@ import {
   Segment
 } from 'semantic-ui-react';
 
-import { login } from '../../actions';
+import { login, setGlobalPortal } from '../../actions';
 
 class Login extends React.Component {
   state = { username: '', password: '' };
@@ -36,10 +36,16 @@ class Login extends React.Component {
     );
 
     if (message === 'success') {
-      window.alert('Login successfully!');
+      //window.alert('Login successfully!');
+      this.props.setGlobalPortal(
+        true,
+        'info',
+        'Success',
+        'Login successfully!'
+      );
       this.props.history.goBack();
     } else {
-      window.alert(message);
+      this.props.setGlobalPortal(true, 'negative', 'Failure', message);
     }
   };
 
@@ -93,5 +99,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { login }
+  { login, setGlobalPortal }
 )(Login);

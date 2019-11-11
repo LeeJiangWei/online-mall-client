@@ -7,7 +7,7 @@ class GlobalMessageModal extends React.Component {
   state = { open: true, color: 'negative' };
 
   componentDidMount() {
-    console.log(this.props);
+    // console.log(this.props);
   }
 
   handleClose = () => this.props.setGlobalPortal(false);

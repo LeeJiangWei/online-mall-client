@@ -4,7 +4,7 @@ import axios from 'axios';
 class Order extends React.Component {
   async componentDidMount() {
     const res = await axios.get('/api/order');
-    console.log(res);
+    // console.log(res);
   }
 
   render() {
