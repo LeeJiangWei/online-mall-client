@@ -30,22 +30,32 @@ class Login extends React.Component {
   };
 
   onSubmit = async () => {
-    const message = await this.props.login(
-      this.state.username,
-      this.state.password
-    );
+    try {
+      const message = await this.props.login(
+        this.state.username,
+        this.state.password
+      );
 
-    if (message === 'success') {
-      //window.alert('Login successfully!');
+      if (message === 'success') {
+        //window.alert('Login successfully!');
+        this.props.setGlobalPortal(
+          true,
+          'info',
+          'Success',
+          'Login successfully!'
+        );
+        this.props.history.goBack();
+      } else {
+        this.props.setGlobalPortal(true, 'negative', 'Failure', message);
+      }
+    } catch (e) {
+      //console.log(e;
       this.props.setGlobalPortal(
         true,
-        'info',
-        'Success',
-        'Login successfully!'
+        'negative',
+        'Network Error',
+        e.toString()
       );
-      this.props.history.goBack();
-    } else {
-      this.props.setGlobalPortal(true, 'negative', 'Failure', message);
     }
   };
 

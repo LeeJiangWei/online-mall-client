@@ -14,7 +14,11 @@ class User extends React.Component {
       );
       const { message, user, goods } = res.data;
       if (message === 'success') {
-        this.setState({ user, goods });
+        if (user) {
+          this.setState({ user, goods });
+        } else {
+          console.log('User not found');
+        }
       }
     } catch (e) {
       this.props.setGlobalPortal(true, 'negative', 'Network error', e);
@@ -48,6 +52,14 @@ class User extends React.Component {
     );
   }
 
+  renderSellingGoods() {
+    return <Segment>Selling</Segment>;
+  }
+
+  renderStatistic() {
+    return <Segment>Statistic</Segment>;
+  }
+
   render() {
     if (this.state.status === 0) {
       //window.alert('You are not able to access this page unless you sign in.');
@@ -64,7 +76,10 @@ class User extends React.Component {
     return (
       <Container>
         {this.renderUserCard()}
-        <h1>User page for user Id: {this.props.match.params.userId}</h1>
+        <Grid>
+          <Grid.Column width={10}>{this.renderSellingGoods()}</Grid.Column>
+          <Grid.Column width={6}>{this.renderStatistic()}</Grid.Column>
+        </Grid>
       </Container>
     );
   }
