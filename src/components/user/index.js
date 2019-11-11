@@ -93,7 +93,9 @@ class User extends React.Component {
                         </Container>
                       </Grid.Column>
                       <Grid.Column width={7} verticalAlign="middle">
-                        <Button>Edit</Button>
+                        <Button as={Link} to={`/goods/edit/${goodsId}`}>
+                          Edit
+                        </Button>
                         <Button>Unmount</Button>
                         <Button icon color="red">
                           <Icon name="trash" />
