@@ -1,34 +1,35 @@
 ## Routes
 ###
-+ /
+- [ ] /
     + list of all goods
 
-+ /goods/new
+- [x] /goods/new
     + add new goods
-+ /goods/edit/:goodsId
+
+- [x] /goods/edit/:goodsId
     + edit existed goods
 
-+ /goods/:goodsId
+- [x] /goods/:goodsId
     + information of particular goods
 
-+ /order
+- [ ] /order
     + order list
 
-+ /order/:orderId
+- [ ] /order/:orderId
     + information of a particular order
 
-+ /user/:userId
+- [ ] /user/:userId
     + personal information
     + selling goods list
     + statistic
 
-+ /administer
+- [ ] /administer
     + list of all users
     + list of all orders
     + list of all goods
 
-+ /login
+- [ ] /login
     + login page
 
-+ /register
+- [ ] /register
     + register page

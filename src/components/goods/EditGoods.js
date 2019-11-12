@@ -12,7 +12,7 @@ import {
   Divider,
   Container
 } from 'semantic-ui-react';
-import { login, setGlobalPortal } from '../../actions';
+import { setGlobalPortal } from '../../actions';
 
 const options = [
   { key: 1, text: 'On sale', value: 1 },

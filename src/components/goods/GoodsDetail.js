@@ -11,6 +11,9 @@ import {
   Container
 } from 'semantic-ui-react';
 
+import { setGlobalPortal } from '../../actions';
+import { connect } from 'react-redux';
+
 class GoodsDetail extends React.Component {
   constructor(props) {
     super(props);
@@ -36,6 +39,22 @@ class GoodsDetail extends React.Component {
       }
     };
   }
+
+  buyGoods = () => {
+    axios.post('/api/order/add', { goodsId: this.state.goodsId }).then(res => {
+      if (res.data.message === 'success') {
+        this.props.setGlobalPortal(true, 'info', 'Success', 'Ok');
+        this.props.history.push(`/order`);
+      } else {
+        this.props.setGlobalPortal(
+          true,
+          'negative',
+          'Failure',
+          res.data.message
+        );
+      }
+    });
+  };
 
   componentDidMount() {
     const that = this;
@@ -78,7 +97,7 @@ class GoodsDetail extends React.Component {
             </div>
             <Divider horizontal>BUY IT NOW</Divider>
             <Container textAlign="center">
-              <Button animated="fade" size="large">
+              <Button animated="fade" size="large" onClick={this.buyGoods}>
                 <Button.Content hidden>Buy</Button.Content>
                 <Button.Content visible>
                   <Icon name="shop" />
@@ -92,4 +111,7 @@ class GoodsDetail extends React.Component {
   }
 }
 
-export default GoodsDetail;
+export default connect(
+  null,
+  { setGlobalPortal }
+)(GoodsDetail);
