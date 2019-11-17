@@ -11,13 +11,16 @@ import {
   Input,
   Item,
   Image,
-  Button
+  Button,
+  Table
 } from 'semantic-ui-react';
 import { setGlobalPortal } from '../../actions';
 import { Link } from 'react-router-dom';
 
+import EditUser from './EditUser';
+
 class Administer extends React.Component {
-  state = { activeItem: 'Goods', userId: -1, users: [], goods: [], orders: [] };
+  state = { activeItem: 'Users', userId: -1, users: [], goods: [], orders: [] };
 
   async componentDidMount() {
     const { userId } = this.state;
@@ -35,7 +38,12 @@ class Administer extends React.Component {
           }
         }
       } catch (e) {
-        this.props.setGlobalPortal(true, 'negative', 'Network error', e);
+        this.props.setGlobalPortal(
+          true,
+          'negative',
+          'Network error',
+          e.toString()
+        );
       }
     }
     if (!access) {
@@ -130,7 +138,7 @@ class Administer extends React.Component {
       2: 'Sold out'
     };
     return (
-      <Item.Group>
+      <Item.Group divided>
         {this.state.goods.map(good => {
           const {
             goodsName,
@@ -203,31 +211,46 @@ class Administer extends React.Component {
       5: 'Super Admin'
     };
     return (
-      <Item.Group>
-        {this.state.users.map(user => {
-          console.log(user);
-          const {
-            userId,
-            userName,
-            address,
-            phoneNumber,
-            password,
-            userState
-          } = user;
-          return (
-            <Item key={userId}>
-              <Item.Content>
-                <Grid>
-                  <Grid.Column>
-                    <Header as="h2">{userName}</Header>
-                    ID: {userId}
-                  </Grid.Column>
-                </Grid>
-              </Item.Content>
-            </Item>
-          );
-        })}
-      </Item.Group>
+      <Table singleLine>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>Name</Table.HeaderCell>
+            <Table.HeaderCell>ID</Table.HeaderCell>
+            <Table.HeaderCell>State</Table.HeaderCell>
+            <Table.HeaderCell>PhoneNumber</Table.HeaderCell>
+            <Table.HeaderCell>Address</Table.HeaderCell>
+            <Table.HeaderCell>Password</Table.HeaderCell>
+            <Table.HeaderCell>Operation</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {this.state.users.map(user => {
+            const {
+              userId,
+              userName,
+              address,
+              phoneNumber,
+              password,
+              userState
+            } = user;
+            return (
+              <Table.Row negative={userState === 0} key={userId}>
+                <Table.Cell>
+                  <Header as="h2">{userName}</Header>
+                </Table.Cell>
+                <Table.Cell>{userId}</Table.Cell>
+                <Table.Cell>{stateToText[userState]}</Table.Cell>
+                <Table.Cell>{phoneNumber}</Table.Cell>
+                <Table.Cell>{address}</Table.Cell>
+                <Table.Cell>{password}</Table.Cell>
+                <Table.Cell>
+                  <EditUser finish={() => this.fetchData()} user={user} />
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
+        </Table.Body>
+      </Table>
     );
   }
 
