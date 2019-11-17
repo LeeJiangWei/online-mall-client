@@ -87,6 +87,8 @@ class User extends React.Component {
   };
 
   renderSellingGoods() {
+    const isOwner =
+      this.props.user.userId.toString() === this.props.match.params.userId;
     const stateToText = {
       0: 'Frozen',
       1: 'On sale',
@@ -128,28 +130,30 @@ class User extends React.Component {
                     <Grid.Column width={3} verticalAlign="middle">
                       <Container text>{stateToText[goodsState]}</Container>
                     </Grid.Column>
-                    <Grid.Column width={5} verticalAlign="middle">
-                      <Button
-                        animated="fade"
-                        as={Link}
-                        to={`/goods/edit/${goodsId}`}
-                      >
-                        <Button.Content hidden>Edit</Button.Content>
-                        <Button.Content visible>
-                          <Icon name="edit" />
-                        </Button.Content>
-                      </Button>
-                      <Button
-                        animated="fade"
-                        color="red"
-                        onClick={() => this.onUnmountButtonClick(good)}
-                      >
-                        <Button.Content hidden>Unmount</Button.Content>
-                        <Button.Content visible>
-                          <Icon name="close" />
-                        </Button.Content>
-                      </Button>
-                    </Grid.Column>
+                    {isOwner && (
+                      <Grid.Column width={5} verticalAlign="middle">
+                        <Button
+                          animated="fade"
+                          as={Link}
+                          to={`/goods/edit/${goodsId}`}
+                        >
+                          <Button.Content hidden>Edit</Button.Content>
+                          <Button.Content visible>
+                            <Icon name="edit" />
+                          </Button.Content>
+                        </Button>
+                        <Button
+                          animated="fade"
+                          color="red"
+                          onClick={() => this.onUnmountButtonClick(good)}
+                        >
+                          <Button.Content hidden>Unmount</Button.Content>
+                          <Button.Content visible>
+                            <Icon name="close" />
+                          </Button.Content>
+                        </Button>
+                      </Grid.Column>
+                    )}
                   </Grid>
                 </Item.Content>
               </Item>

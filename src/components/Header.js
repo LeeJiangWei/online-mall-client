@@ -6,7 +6,7 @@ import { Menu, Container, Icon } from 'semantic-ui-react';
 import { logout, setGlobalPortal } from '../actions';
 
 class Header extends React.Component {
-  state = { activeItem: 'goods', status: 2, userId: -1 };
+  state = { activeItem: 'goods', status: 2, userId: -1, userState: 1 };
 
   componentDidMount() {
     this.setState({
@@ -15,7 +15,11 @@ class Header extends React.Component {
   }
 
   static getDerivedStateFromProps(props) {
-    return { status: props.status, userId: props.user.userId };
+    return {
+      status: props.status,
+      userId: props.user.userId,
+      userState: props.user.userState
+    };
   }
 
   handleItemClick = (e, { name }) => {
@@ -84,6 +88,17 @@ class Header extends React.Component {
               active={activeItem === 'user'}
               onClick={this.handleItemClick}
             />
+            {this.state.userState === 5 && (
+              <Menu.Item
+                as={Link}
+                to="/administer"
+                name="admin"
+                active={activeItem === 'admin'}
+                onClick={this.handleItemClick}
+              >
+                Admin
+              </Menu.Item>
+            )}
             <Menu.Menu position="right">{this.renderLoginOrLogout()}</Menu.Menu>
           </Container>
         </Menu>
