@@ -64,8 +64,34 @@ class User extends React.Component {
     );
   }
 
+  onUnmountButtonClick = async good => {
+    try {
+      const response = await axios.post(`/api/goods/${good.goodsId}`, {
+        ...good,
+        goodsState: 0
+      });
+      const { message } = response.data;
+      if (message === 'success') {
+        this.props.setGlobalPortal(
+          true,
+          'info',
+          'Success',
+          'Successfully unmount your goods'
+        );
+      } else {
+        this.props.setGlobalPortal(true, 'negative', 'Failure', message);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   renderSellingGoods() {
-    console.log(this.state);
+    const stateToText = {
+      0: 'Frozen',
+      1: 'On sale',
+      2: 'Sold out'
+    };
     return (
       <Segment>
         <Header as="h2">Selling goods</Header>
@@ -74,39 +100,61 @@ class User extends React.Component {
         </Button>
         <Divider />
         <Item.Group>
-          {this.state.goods.map(
-            ({ goodsName, goodsId, category, price, picture }) => {
-              return (
-                <Item key={goodsId}>
-                  <Image size="tiny" src={picture} />
-                  <Item.Content verticalAlign="middle">
-                    <Grid>
-                      <Grid.Column width={4}>
-                        <Header size="huge" as="a">
-                          {goodsName}
-                        </Header>
-                        <p>{category}</p>
-                      </Grid.Column>
-                      <Grid.Column width={5} verticalAlign="middle">
-                        <Container text>
-                          <Header as="h3">price: {price}</Header>
-                        </Container>
-                      </Grid.Column>
-                      <Grid.Column width={7} verticalAlign="middle">
-                        <Button as={Link} to={`/goods/edit/${goodsId}`}>
-                          Edit
-                        </Button>
-                        <Button>Unmount</Button>
-                        <Button icon color="red">
-                          <Icon name="trash" />
-                        </Button>
-                      </Grid.Column>
-                    </Grid>
-                  </Item.Content>
-                </Item>
-              );
-            }
-          )}
+          {this.state.goods.map(good => {
+            const {
+              goodsName,
+              goodsId,
+              category,
+              price,
+              picture,
+              goodsState
+            } = good;
+            return (
+              <Item key={goodsId}>
+                <Image size="tiny" src={picture} />
+                <Item.Content verticalAlign="middle">
+                  <Grid>
+                    <Grid.Column width={4}>
+                      <Header size="huge" as={Link} to={`/goods/${goodsId}`}>
+                        {goodsName}
+                      </Header>
+                      <p>{category}</p>
+                    </Grid.Column>
+                    <Grid.Column width={4} verticalAlign="middle">
+                      <Container text>
+                        <Header as="h3">￥{price}</Header>
+                      </Container>
+                    </Grid.Column>
+                    <Grid.Column width={3} verticalAlign="middle">
+                      <Container text>{stateToText[goodsState]}</Container>
+                    </Grid.Column>
+                    <Grid.Column width={5} verticalAlign="middle">
+                      <Button
+                        animated="fade"
+                        as={Link}
+                        to={`/goods/edit/${goodsId}`}
+                      >
+                        <Button.Content hidden>Edit</Button.Content>
+                        <Button.Content visible>
+                          <Icon name="edit" />
+                        </Button.Content>
+                      </Button>
+                      <Button
+                        animated="fade"
+                        color="red"
+                        onClick={() => this.onUnmountButtonClick(good)}
+                      >
+                        <Button.Content hidden>Unmount</Button.Content>
+                        <Button.Content visible>
+                          <Icon name="close" />
+                        </Button.Content>
+                      </Button>
+                    </Grid.Column>
+                  </Grid>
+                </Item.Content>
+              </Item>
+            );
+          })}
         </Item.Group>
       </Segment>
     );
