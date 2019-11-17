@@ -131,7 +131,11 @@ class User extends React.Component {
                       <Container text>{stateToText[goodsState]}</Container>
                     </Grid.Column>
                     {isOwner && (
-                      <Grid.Column width={5} verticalAlign="middle">
+                      <Grid.Column
+                        width={5}
+                        verticalAlign="middle"
+                        textAlign="right"
+                      >
                         <Button
                           animated="fade"
                           as={Link}

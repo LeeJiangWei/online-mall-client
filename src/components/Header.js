@@ -92,8 +92,8 @@ class Header extends React.Component {
               <Menu.Item
                 as={Link}
                 to="/administer"
-                name="admin"
-                active={activeItem === 'admin'}
+                name="administer"
+                active={activeItem === 'administer'}
                 onClick={this.handleItemClick}
               >
                 Admin
