@@ -18,6 +18,7 @@ import { setGlobalPortal } from '../../actions';
 import { Link } from 'react-router-dom';
 
 import EditUser from './EditUser';
+import CreateUser from './CreateUser';
 
 class Administer extends React.Component {
   state = { activeItem: 'Users', userId: -1, users: [], goods: [], orders: [] };
@@ -97,12 +98,15 @@ class Administer extends React.Component {
 
   renderWelcomeSegment() {
     return (
-      <Header size="huge" floated="left">
-        <Icon name="user" />
-        <Header.Content>
-          Hello, {this.props.userName}, Dear System Administrator
-        </Header.Content>
-      </Header>
+      <>
+        <Header size="huge" floated="left">
+          <Icon name="user" />
+          <Header.Content>
+            Hello, {this.props.userName}, Dear System Administrator
+          </Header.Content>
+        </Header>
+        <CreateUser finish={() => this.fetchData()} />
+      </>
     );
   }
 
