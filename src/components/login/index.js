@@ -7,8 +7,10 @@ import {
   Grid,
   Header,
   Message,
-  Segment
+  Segment,
+  Icon
 } from 'semantic-ui-react';
+import Register from './Register';
 
 import { login, setGlobalPortal } from '../../actions';
 
@@ -17,7 +19,7 @@ class Login extends React.Component {
 
   componentDidMount() {
     if (this.props.isLogin) {
-      this.props.history.goBack();
+      this.props.history.push('/');
     }
   }
 
@@ -93,8 +95,12 @@ class Login extends React.Component {
               </Button>
             </Segment>
           </Form>
-          <Message>
-            New to us? <Link to="/register">Sign Up</Link>
+          <Message icon>
+            <Icon name="question circle outline" />
+            <Message.Header>New to us? Create account-></Message.Header>
+            <Message.Content>
+              <Register />
+            </Message.Content>
           </Message>
         </Grid.Column>
       </Grid>
