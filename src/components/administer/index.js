@@ -19,9 +19,17 @@ import { Link } from 'react-router-dom';
 
 import EditUser from './EditUser';
 import CreateUser from './CreateUser';
+import EditOrder from './EditOrder';
 
 class Administer extends React.Component {
-  state = { activeItem: 'Users', userId: -1, users: [], goods: [], orders: [] };
+  state = {
+    activeItem: 'Orders',
+    userId: -1,
+    users: [],
+    goods: [],
+    orders: [],
+    loading: false
+  };
 
   async componentDidMount() {
     const { userId } = this.state;
@@ -30,6 +38,8 @@ class Administer extends React.Component {
     if (userId !== -1) {
       // not login
       try {
+        this.setState({ loading: true });
+
         const res = await axios.get(`/api/user/${userId}`);
         const { message, user } = res.data;
         if (message === 'success') {
@@ -38,6 +48,8 @@ class Administer extends React.Component {
             access = true;
           }
         }
+
+        this.setState({ loading: false });
       } catch (e) {
         this.props.setGlobalPortal(
           true,
@@ -70,6 +82,8 @@ class Administer extends React.Component {
 
   async fetchData() {
     try {
+      this.setState({ loading: true });
+
       const response_of_goods = await axios.get('/api/goods/');
       if (response_of_goods.data.message === 'success') {
         this.setState({ goods: response_of_goods.data.goods });
@@ -84,6 +98,8 @@ class Administer extends React.Component {
       if (response_of_goods.data.message === 'success') {
         this.setState({ users: response_of_users.data.users });
       }
+
+      this.setState({ loading: false });
     } catch (e) {
       this.props.setGlobalPortal(
         true,
@@ -206,7 +222,63 @@ class Administer extends React.Component {
     );
   }
 
-  renderOrdersList() {}
+  renderOrdersList() {
+    const stateToText = {
+      0: 'Frozen',
+      1: 'On Going',
+      2: 'Finished',
+      3: 'Aborted'
+    };
+    return (
+      <Table singleLine selectable>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>Goods Name</Table.HeaderCell>
+            <Table.HeaderCell>Order ID</Table.HeaderCell>
+            <Table.HeaderCell>State</Table.HeaderCell>
+            <Table.HeaderCell>Buyer</Table.HeaderCell>
+            <Table.HeaderCell>Seller</Table.HeaderCell>
+            <Table.HeaderCell>Generate Time</Table.HeaderCell>
+            <Table.HeaderCell>Operation</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {this.state.orders.map(order => {
+            const {
+              orderId,
+              goodsId,
+              generateTime,
+              userId,
+              orderState
+            } = order;
+
+            return (
+              <Table.Row
+                negative={orderState === (0 || 3)}
+                positive={orderState === 2}
+                warning={orderState === 1}
+                key={orderId}
+              >
+                <Table.Cell>
+                  <Header as={Link} to={`/goods/${goodsId}`}>
+                    {goodsId}
+                  </Header>
+                </Table.Cell>
+                <Table.Cell>{orderId}</Table.Cell>
+                <Table.Cell>{stateToText[orderState]}</Table.Cell>
+                <Table.Cell>{userId}</Table.Cell>
+                <Table.Cell>seller</Table.Cell>
+                <Table.Cell>{generateTime}</Table.Cell>
+                <Table.Cell>
+                  <EditOrder finish={() => this.fetchData()} order={order} />
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
+        </Table.Body>
+      </Table>
+    );
+  }
 
   renderUsersList() {
     const stateToText = {
@@ -215,7 +287,7 @@ class Administer extends React.Component {
       5: 'Super Admin'
     };
     return (
-      <Table singleLine>
+      <Table singleLine selectable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Name</Table.HeaderCell>
@@ -278,7 +350,7 @@ class Administer extends React.Component {
           {this.renderWelcomeSegment()}
         </Segment>
         {this.renderSelector()}
-        <Segment clearing vertical>
+        <Segment clearing vertical loading={this.state.loading}>
           {this.renderList()}
         </Segment>
       </>

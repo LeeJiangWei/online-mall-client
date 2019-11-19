@@ -23,7 +23,7 @@
     + selling goods list
     + statistic
 
-- [ ] /administer
+- [x] /administer
     + list of all users
     + list of all orders
     + list of all goods
