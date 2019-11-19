@@ -1,6 +1,6 @@
 ## Routes
 ###
-- [ ] /
+- [x] /
     + list of all goods
 
 - [x] /goods/new
@@ -18,7 +18,7 @@
 - [ ] /order/:orderId
     + information of a particular order
 
-- [ ] /user/:userId
+- [x] /user/:userId
     + personal information
     + selling goods list
     + statistic
@@ -28,8 +28,6 @@
     + list of all orders
     + list of all goods
 
-- [ ] /login
+- [x] /login
     + login page
-
-- [ ] /register
     + register page
