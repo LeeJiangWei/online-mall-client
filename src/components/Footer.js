@@ -7,7 +7,7 @@ class Footer extends React.Component {
       <>
         <Divider />
         <Container textAlign="center" style={{ marginBottom: '1em' }}>
-          Powered By Semantic UI
+          Powered by 0x26E development team
         </Container>
       </>
     );
