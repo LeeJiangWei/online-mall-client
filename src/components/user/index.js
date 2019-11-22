@@ -20,6 +20,10 @@ class User extends React.Component {
   state = { status: 2, user: {}, goods: [] };
 
   async componentDidMount() {
+    await this.fetchData();
+  }
+
+  fetchData = async () => {
     try {
       const res = await axios.get(
         `/api/user/${this.props.match.params.userId}`
@@ -29,13 +33,24 @@ class User extends React.Component {
         if (user) {
           this.setState({ user, goods });
         } else {
-          console.log('User not found');
+          this.props.setGlobalPortal(
+            true,
+            'negative',
+            'Network error',
+            'User not found'
+          );
+          this.props.history.push('/');
         }
       }
     } catch (e) {
-      this.props.setGlobalPortal(true, 'negative', 'Network error', e);
+      this.props.setGlobalPortal(
+        true,
+        'negative',
+        'Network error',
+        e.toString()
+      );
     }
-  }
+  };
 
   static getDerivedStateFromProps({ status }) {
     return { status };
@@ -64,25 +79,65 @@ class User extends React.Component {
     );
   }
 
-  onUnmountButtonClick = async good => {
+  onActionButtonClick = async (good, nextState) => {
     try {
       const response = await axios.post(`/api/goods/${good.goodsId}`, {
         ...good,
-        goodsState: 0
+        goodsState: nextState
       });
       const { message } = response.data;
       if (message === 'success') {
+        await this.fetchData();
         this.props.setGlobalPortal(
           true,
           'info',
           'Success',
-          'Successfully unmount your goods'
+          `Successfully ${nextState ? 'mount' : 'unmount'} your goods`
         );
       } else {
         this.props.setGlobalPortal(true, 'negative', 'Failure', message);
       }
     } catch (e) {
-      console.log(e);
+      this.props.setGlobalPortal(
+        true,
+        'negative',
+        'Network Error',
+        e.toString()
+      );
+    }
+  };
+
+  renderActionButton = (goodsState, good) => {
+    switch (goodsState) {
+      case 0:
+        return (
+          <Button
+            animated="fade"
+            color="green"
+            onClick={() => this.onActionButtonClick(good, 1)}
+          >
+            <Button.Content hidden>Mount</Button.Content>
+            <Button.Content visible>
+              <Icon name="level up" />
+            </Button.Content>
+          </Button>
+        );
+      case 1:
+        return (
+          <Button
+            animated="fade"
+            color="red"
+            onClick={() => this.onActionButtonClick(good, 0)}
+          >
+            <Button.Content hidden>Unmount</Button.Content>
+            <Button.Content visible>
+              <Icon name="close" />
+            </Button.Content>
+          </Button>
+        );
+      case 2:
+      default:
+        return <></>;
     }
   };
 
@@ -128,7 +183,12 @@ class User extends React.Component {
                       </Container>
                     </Grid.Column>
                     <Grid.Column width={3} verticalAlign="middle">
-                      <Container text>{stateToText[goodsState]}</Container>
+                      <Container
+                        text
+                        style={{ color: goodsState === 0 ? 'red' : '' }}
+                      >
+                        {stateToText[goodsState]}
+                      </Container>
                     </Grid.Column>
                     {isOwner && (
                       <Grid.Column
@@ -140,22 +200,14 @@ class User extends React.Component {
                           animated="fade"
                           as={Link}
                           to={`/goods/edit/${goodsId}`}
+                          disabled={goodsState === 2}
                         >
                           <Button.Content hidden>Edit</Button.Content>
                           <Button.Content visible>
                             <Icon name="edit" />
                           </Button.Content>
                         </Button>
-                        <Button
-                          animated="fade"
-                          color="red"
-                          onClick={() => this.onUnmountButtonClick(good)}
-                        >
-                          <Button.Content hidden>Unmount</Button.Content>
-                          <Button.Content visible>
-                            <Icon name="close" />
-                          </Button.Content>
-                        </Button>
+                        {this.renderActionButton(goodsState, good)}
                       </Grid.Column>
                     )}
                   </Grid>
