@@ -1,6 +1,6 @@
 ## Routes
 ###
-- [x] /
+- [ ] /
     + list of all goods
 
 - [x] /goods/new
@@ -12,7 +12,7 @@
 - [x] /goods/:goodsId
     + information of particular goods
 
-- [ ] /order
+- [x] /order
     + order list
     + search user's orders
 

@@ -468,7 +468,7 @@ class Administer extends React.Component {
           {this.renderWelcomeSegment()}
         </Segment>
         {this.renderSelector()}
-        <Segment clearing vertical loading={this.state.loading}>
+        <Segment vertical loading={this.state.loading}>
           {this.renderList()}
         </Segment>
       </>

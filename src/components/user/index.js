@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import {
@@ -152,69 +153,81 @@ class User extends React.Component {
     return (
       <Segment>
         <Header as="h2">Selling goods</Header>
-        <Button as={Link} to="/goods/new">
-          New
-        </Button>
+        {isOwner && (
+          <Button as={Link} to="/goods/new">
+            New
+          </Button>
+        )}
         <Divider />
         <Item.Group>
-          {this.state.goods.map(good => {
-            const {
-              goodsName,
-              goodsId,
-              category,
-              price,
-              picture,
-              goodsState
-            } = good;
-            return (
-              <Item key={goodsId}>
-                <Image size="tiny" src={picture} />
-                <Item.Content verticalAlign="middle">
-                  <Grid>
-                    <Grid.Column width={4}>
-                      <Header size="huge" as={Link} to={`/goods/${goodsId}`}>
-                        {goodsName}
-                      </Header>
-                      <p>{category}</p>
-                    </Grid.Column>
-                    <Grid.Column width={4} verticalAlign="middle">
-                      <Container text>
-                        <Header as="h3">￥{price}</Header>
-                      </Container>
-                    </Grid.Column>
-                    <Grid.Column width={3} verticalAlign="middle">
-                      <Container
-                        text
-                        style={{ color: goodsState === 0 ? 'red' : '' }}
-                      >
-                        {stateToText[goodsState]}
-                      </Container>
-                    </Grid.Column>
-                    {isOwner && (
-                      <Grid.Column
-                        width={5}
-                        verticalAlign="middle"
-                        textAlign="right"
-                      >
-                        <Button
-                          animated="fade"
-                          as={Link}
-                          to={`/goods/edit/${goodsId}`}
-                          disabled={goodsState === 2}
-                        >
-                          <Button.Content hidden>Edit</Button.Content>
-                          <Button.Content visible>
-                            <Icon name="edit" />
-                          </Button.Content>
-                        </Button>
-                        {this.renderActionButton(goodsState, good)}
+          {this.state.goods.length === 0 ? (
+            <Segment placeholder>
+              <Header icon>
+                <Icon name="x" />
+                No Good is Selling.
+              </Header>
+              {isOwner && <Button primary>Sell</Button>}
+            </Segment>
+          ) : (
+            _.map(this.state.goods, good => {
+              const {
+                goodsName,
+                goodsId,
+                category,
+                price,
+                picture,
+                goodsState
+              } = good;
+              return (
+                <Item key={goodsId}>
+                  <Image size="tiny" src={picture} />
+                  <Item.Content verticalAlign="middle">
+                    <Grid>
+                      <Grid.Column width={4}>
+                        <Header size="huge" as={Link} to={`/goods/${goodsId}`}>
+                          {goodsName}
+                        </Header>
+                        <p>{category}</p>
                       </Grid.Column>
-                    )}
-                  </Grid>
-                </Item.Content>
-              </Item>
-            );
-          })}
+                      <Grid.Column width={4} verticalAlign="middle">
+                        <Container text>
+                          <Header as="h3">￥{price}</Header>
+                        </Container>
+                      </Grid.Column>
+                      <Grid.Column width={3} verticalAlign="middle">
+                        <Container
+                          text
+                          style={{ color: goodsState === 0 ? 'red' : '' }}
+                        >
+                          {stateToText[goodsState]}
+                        </Container>
+                      </Grid.Column>
+                      {isOwner && (
+                        <Grid.Column
+                          width={5}
+                          verticalAlign="middle"
+                          textAlign="right"
+                        >
+                          <Button
+                            animated="fade"
+                            as={Link}
+                            to={`/goods/edit/${goodsId}`}
+                            disabled={goodsState === 2}
+                          >
+                            <Button.Content hidden>Edit</Button.Content>
+                            <Button.Content visible>
+                              <Icon name="edit" />
+                            </Button.Content>
+                          </Button>
+                          {this.renderActionButton(goodsState, good)}
+                        </Grid.Column>
+                      )}
+                    </Grid>
+                  </Item.Content>
+                </Item>
+              );
+            })
+          )}
         </Item.Group>
       </Segment>
     );
