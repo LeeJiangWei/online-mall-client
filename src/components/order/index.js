@@ -31,7 +31,7 @@ const ORDER = {
 };
 
 class Order extends React.Component {
-  state = { orders: [] };
+  state = { orders: [], loading: false };
 
   async componentDidMount() {
     await this.loadOrdersFromServer();
@@ -39,6 +39,7 @@ class Order extends React.Component {
 
   async loadOrdersFromServer() {
     try {
+      this.setState({ loading: true });
       const { data } = await axios.get('/api/order');
       const { message, orders } = data;
       if (message === 'success') {
@@ -46,6 +47,7 @@ class Order extends React.Component {
       } else {
         this.props.setGlobalPortal(true, 'negative', 'Failure', message);
       }
+      this.setState({ loading: false });
     } catch (e) {}
   }
 
@@ -57,9 +59,9 @@ class Order extends React.Component {
     const that = this;
     axios
       .post('/api/order/' + id, { orderState: state })
-      .then(function(res) {
+      .then(async function(res) {
         if (res.data.message === 'success') {
-          that.loadOrdersFromServer();
+          await that.loadOrdersFromServer();
         } else {
           this.props.setGlobalPortal(
             true,
@@ -139,7 +141,7 @@ class Order extends React.Component {
           icon="search"
           placeholder="Search your orders..."
         />
-        <Segment>{this.renderList()}</Segment>
+        <Segment loading={this.state.loading}>{this.renderList()}</Segment>
       </Container>
     );
   }

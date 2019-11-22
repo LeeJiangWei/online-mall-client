@@ -9,6 +9,7 @@ import {
   Icon,
   Image,
   Segment,
+  Input,
   Divider,
   Container
 } from 'semantic-ui-react';
@@ -24,6 +25,7 @@ class EditGoods extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       goodsId: this.props.match.params.goodsId,
       isCreatingNewGoods: this.props.match.path === '/goods/new',
       goods: {
@@ -88,6 +90,33 @@ class EditGoods extends React.Component {
     this.setState({ goods });
   };
 
+  onFileInputChange = event => {
+    this.setState({ loading: true });
+    let imageForm = new FormData();
+    imageForm.append('smfile', event.target.files[0]);
+    axios
+      .post('https://sm.ms/api/upload', imageForm, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .then(res => {
+        this.setState({ loading: false });
+        if (res.data && res.data.success) {
+          let goods = { ...this.state.goods };
+          goods.picture = res.data.data.url;
+          this.setState({ goods });
+        } else {
+          this.props.setGlobalPortal(
+            true,
+            'negative',
+            'Failure',
+            res.data.message
+          );
+        }
+      });
+  };
+
   componentDidMount() {
     const that = this;
     if (!that.state.isCreatingNewGoods) {
@@ -110,7 +139,7 @@ class EditGoods extends React.Component {
 
   render() {
     return (
-      <Segment>
+      <Segment loading={this.state.loading}>
         <Grid columns={2} relaxed="very">
           <Grid.Column>
             <Image src={this.state.goods.picture} size="large" />
@@ -158,8 +187,23 @@ class EditGoods extends React.Component {
                   />
                 </Form.Group>
                 <Form.Field>
-                  <label>Picture</label>
                   <input
+                    ref="imageInput"
+                    type="file"
+                    id="uploadImage"
+                    name="file"
+                    accept="image/*"
+                    onChange={this.onFileInputChange}
+                    style={{ display: 'none' }}
+                  />
+                  <label>Picture</label>
+                  <Input
+                    action={{
+                      icon: 'upload',
+                      onClick: () => {
+                        this.refs.imageInput.click();
+                      }
+                    }}
                     placeholder="Picture url"
                     name="picture"
                     value={this.state.goods.picture}
