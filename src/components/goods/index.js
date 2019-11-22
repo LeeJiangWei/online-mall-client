@@ -16,8 +16,11 @@ class Goods extends React.Component {
   async componentDidMount() {
     try {
       const { data } = await axios.get('/api/goods/');
-      const { message, goods } = data;
+      let { message, goods } = data;
       if (message === 'success') {
+        goods = goods.filter(({ goodsState }) => {
+          return goodsState === 1;
+        });
         this.setState({ goods });
       }
     } catch (e) {}
