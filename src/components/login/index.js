@@ -7,8 +7,10 @@ import {
   Grid,
   Header,
   Message,
-  Segment
+  Segment,
+  Icon
 } from 'semantic-ui-react';
+import Register from './Register';
 
 import { login, setGlobalPortal } from '../../actions';
 
@@ -17,16 +19,13 @@ class Login extends React.Component {
 
   componentDidMount() {
     if (this.props.isLogin) {
-      this.props.history.goBack();
+      this.props.history.push('/');
     }
   }
 
-  onUsernameChange = e => {
-    this.setState({ username: e.target.value });
-  };
-
-  onPasswordChange = e => {
-    this.setState({ password: e.target.value });
+  onInputChange = e => {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
   };
 
   onSubmit = async () => {
@@ -44,7 +43,7 @@ class Login extends React.Component {
           'Success',
           'Login successfully!'
         );
-        this.props.history.goBack();
+        this.props.history.push('/');
       } else {
         this.props.setGlobalPortal(true, 'negative', 'Failure', message);
       }
@@ -77,8 +76,9 @@ class Login extends React.Component {
                 icon="user"
                 iconPosition="left"
                 placeholder="E-mail address"
+                name="username"
                 value={this.state.username}
-                onChange={this.onUsernameChange}
+                onChange={this.onInputChange}
               />
               <Form.Input
                 fluid
@@ -86,16 +86,21 @@ class Login extends React.Component {
                 iconPosition="left"
                 placeholder="Password"
                 type="password"
+                name="password"
                 value={this.state.password}
-                onChange={this.onPasswordChange}
+                onChange={this.onInputChange}
               />
               <Button color="teal" fluid size="large" onClick={this.onSubmit}>
                 Login
               </Button>
             </Segment>
           </Form>
-          <Message>
-            New to us? <Link to="/register">Sign Up</Link>
+          <Message icon>
+            <Icon name="question circle outline" />
+            <Message.Header>New to us? Create account-></Message.Header>
+            <Message.Content>
+              <Register />
+            </Message.Content>
           </Message>
         </Grid.Column>
       </Grid>

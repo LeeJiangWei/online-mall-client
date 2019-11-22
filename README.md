@@ -16,18 +16,16 @@
     + order list
     + search user's orders
 
-- [ ] /user/:userId
+- [x] /user/:userId
     + personal information
     + selling goods list
     + statistic
 
-- [ ] /administer
+- [x] /administer
     + list of all users
     + list of all orders
     + list of all goods
 
 - [x] /login
     + login page
-
-- [ ] /register
     + register page
