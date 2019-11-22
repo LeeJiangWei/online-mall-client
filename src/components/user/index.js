@@ -118,7 +118,7 @@ class User extends React.Component {
           >
             <Button.Content hidden>Mount</Button.Content>
             <Button.Content visible>
-              <Icon name="level up" />
+              <Icon name="arrow up" />
             </Button.Content>
           </Button>
         );

@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import {
   Container,
@@ -23,12 +24,14 @@ import EditOrder from './EditOrder';
 
 class Administer extends React.Component {
   state = {
-    activeItem: 'Orders',
+    activeItem: 'Users',
     userId: -1,
     users: [],
     goods: [],
     orders: [],
-    loading: false
+    loading: false,
+    direction: null,
+    column: null
   };
 
   async componentDidMount() {
@@ -140,6 +143,26 @@ class Administer extends React.Component {
     }
   };
 
+  handleSort = (clickedColumn, dataName) => {
+    const { column, direction } = this.state;
+    const data = this.state[dataName];
+
+    if (column !== clickedColumn) {
+      this.setState({
+        column: clickedColumn,
+        [dataName]: _.sortBy(data, [clickedColumn]),
+        direction: 'ascending'
+      });
+
+      return;
+    }
+
+    this.setState({
+      [dataName]: data.reverse(),
+      direction: direction === 'ascending' ? 'descending' : 'ascending'
+    });
+  };
+
   renderActionButton = (goodsState, good) => {
     switch (goodsState) {
       case 0:
@@ -151,7 +174,7 @@ class Administer extends React.Component {
           >
             <Button.Content hidden>Mount</Button.Content>
             <Button.Content visible>
-              <Icon name="level up" />
+              <Icon name="arrow up" />
             </Button.Content>
           </Button>
         );
@@ -287,21 +310,35 @@ class Administer extends React.Component {
       2: 'Finished',
       3: 'Aborted'
     };
+    const columnNames = [
+      { key: 'Goods Name', value: 'goodsName' },
+      { key: 'Order ID', value: 'orderId' },
+      { key: 'State', value: 'orderState' },
+      { key: 'Buyer', value: 'userId' },
+      { key: 'Seller', value: 'address' },
+      { key: 'Generate Time', value: 'generateTime' }
+    ];
+    const { column, orders, direction } = this.state;
     return (
-      <Table singleLine selectable>
+      <Table singleLine selectable sortable>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell>Goods Name</Table.HeaderCell>
-            <Table.HeaderCell>Order ID</Table.HeaderCell>
-            <Table.HeaderCell>State</Table.HeaderCell>
-            <Table.HeaderCell>Buyer</Table.HeaderCell>
-            <Table.HeaderCell>Seller</Table.HeaderCell>
-            <Table.HeaderCell>Generate Time</Table.HeaderCell>
+            {_.map(
+              columnNames.map(({ key, value }) => (
+                <Table.HeaderCell
+                  key={key}
+                  sorted={column === value ? direction : null}
+                  onClick={() => this.handleSort(value, 'orders')}
+                >
+                  {key}
+                </Table.HeaderCell>
+              ))
+            )}
             <Table.HeaderCell>Operation</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {this.state.orders.map(order => {
+          {_.map(orders, order => {
             const {
               orderId,
               goodsId,
@@ -344,21 +381,34 @@ class Administer extends React.Component {
       1: 'Normal User',
       5: 'Super Admin'
     };
+    const columnNames = [
+      { key: 'Name', value: 'userName' },
+      { key: 'ID', value: 'userId' },
+      { key: 'State', value: 'userState' },
+      { key: 'phoneNumber', value: 'phoneNumber' },
+      { key: 'Address', value: 'address' },
+      { key: 'Password', value: 'password' }
+    ];
+    const { column, users, direction } = this.state;
     return (
-      <Table singleLine selectable>
+      <Table singleLine selectable sortable>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell>Name</Table.HeaderCell>
-            <Table.HeaderCell>ID</Table.HeaderCell>
-            <Table.HeaderCell>State</Table.HeaderCell>
-            <Table.HeaderCell>PhoneNumber</Table.HeaderCell>
-            <Table.HeaderCell>Address</Table.HeaderCell>
-            <Table.HeaderCell>Password</Table.HeaderCell>
+            {_.map(columnNames, ({ key, value }) => (
+              <Table.HeaderCell
+                key={key}
+                sorted={column === value ? direction : null}
+                onClick={() => this.handleSort(value, 'users')}
+              >
+                {key}
+              </Table.HeaderCell>
+            ))}
+
             <Table.HeaderCell>Operation</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {this.state.users.map(user => {
+          {_.map(users, user => {
             const {
               userId,
               userName,
