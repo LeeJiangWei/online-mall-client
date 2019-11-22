@@ -95,9 +95,16 @@ class GoodsDetail extends React.Component {
               <Header as="h3">Seller address: {seller.address}</Header>
               <Header as="h3">Description: {goods.description}</Header>
             </div>
-            <Divider horizontal>BUY IT NOW</Divider>
+            <Divider horizontal>
+              {goods.goodsState === 1 ? 'BUY IT NOW' : 'NOT AVAILABLE'}
+            </Divider>
             <Container textAlign="center">
-              <Button animated="fade" size="large" onClick={this.buyGoods}>
+              <Button
+                animated="fade"
+                size="large"
+                onClick={this.buyGoods}
+                disabled={goods.goodsState !== 1}
+              >
                 <Button.Content hidden>Buy</Button.Content>
                 <Button.Content visible>
                   <Icon name="shop" />
