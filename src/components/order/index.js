@@ -16,11 +16,11 @@ import { setGlobalPortal } from '../../actions';
 import { connect } from 'react-redux';
 
 const orderStates = [
-  { key: -1, text: 'ALL', value: -1 },
   { key: 0, text: 'FROZEN', value: 0 },
   { key: 1, text: 'ONGOING', value: 1 },
   { key: 2, text: 'FINISHED', value: 2 },
-  { key: 3, text: 'ABORTED', value: 3 }
+  { key: 3, text: 'ABORTED', value: 3 },
+  { key: -1, text: 'ALL', value: -1 }
 ];
 
 const ORDER = {
