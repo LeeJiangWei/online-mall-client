@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import {
   Segment,
   Statistic,
@@ -6,25 +7,32 @@ import {
   Header,
   Card,
   Icon,
-  Image
+  Image,
+  Menu
 } from 'semantic-ui-react';
 import axios from 'axios';
 
 class Goods extends React.Component {
-  state = { goods: [] };
+  state = { goods: [], loading: false };
 
   async componentDidMount() {
+    await this.fetchData();
+  }
+
+  fetchData = async () => {
     try {
+      this.setState({ loading: true });
       const { data } = await axios.get('/api/goods/');
       let { message, goods } = data;
       if (message === 'success') {
-        goods = goods.filter(({ goodsState }) => {
+        goods = _.filter(goods, ({ goodsState }) => {
           return goodsState === 1;
         });
         this.setState({ goods });
       }
+      this.setState({ loading: false });
     } catch (e) {}
-  }
+  };
 
   onCardClicked = id => {
     this.props.history.push(`/goods/${id}`);
@@ -51,6 +59,19 @@ class Goods extends React.Component {
     );
   }
 
+  renderFilter() {
+    return (
+      <Menu secondary>
+        <Menu.Item icon="x" name="home" />
+        <Menu.Item name="messages" />
+        <Menu.Item name="friends" />
+        <Menu.Menu position="right">
+          <Menu.Item name="logout" />
+        </Menu.Menu>
+      </Menu>
+    );
+  }
+
   render() {
     return (
       <>
@@ -66,7 +87,8 @@ class Goods extends React.Component {
             </Statistic>
           </Header>
         </Segment>
-        <Segment vertical>
+        <Segment loading={this.state.loading} vertical>
+          {this.renderFilter()}
           <Grid columns={4}>{this.renderList()}</Grid>
         </Segment>
       </>

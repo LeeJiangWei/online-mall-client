@@ -214,7 +214,9 @@ class Order extends React.Component {
           placeholder='Press "Enter" to search...'
           onChange={this.searchOrders}
         />
-        <Segment loading={this.state.loading}>{this.renderList()}</Segment>
+        <Segment vertical loading={this.state.loading}>
+          {this.renderList()}
+        </Segment>
       </Container>
     );
   }

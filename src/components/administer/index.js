@@ -92,7 +92,7 @@ class Administer extends React.Component {
         this.setState({ goods: response_of_goods.data.goods });
       }
 
-      const response_of_orders = await axios.get('/api/order/');
+      const response_of_orders = await axios.get('/api/order/all');
       if (response_of_orders.data.message === 'success') {
         this.setState({ orders: response_of_orders.data.orders });
       }
@@ -101,7 +101,7 @@ class Administer extends React.Component {
       if (response_of_goods.data.message === 'success') {
         this.setState({ users: response_of_users.data.users });
       }
-
+      console.log(this.state.orders);
       this.setState({ loading: false });
     } catch (e) {
       this.props.setGlobalPortal(
@@ -340,10 +340,14 @@ class Administer extends React.Component {
         <Table.Body>
           {_.map(orders, order => {
             const {
+              goodsName,
               orderId,
               goodsId,
               generateTime,
-              userId,
+              buyerId,
+              buyerName,
+              sellerId,
+              sellerName,
               orderState
             } = order;
 
@@ -356,13 +360,17 @@ class Administer extends React.Component {
               >
                 <Table.Cell>
                   <Header as={Link} to={`/goods/${goodsId}`}>
-                    {goodsId}
+                    {goodsName}
                   </Header>
                 </Table.Cell>
-                <Table.Cell>{orderId}</Table.Cell>
+                <Table.Cell>{goodsId}</Table.Cell>
                 <Table.Cell>{stateToText[orderState]}</Table.Cell>
-                <Table.Cell>{userId}</Table.Cell>
-                <Table.Cell>seller</Table.Cell>
+                <Table.Cell>
+                  <Link to={`/user/${buyerId}`}>{buyerName}</Link>
+                </Table.Cell>
+                <Table.Cell>
+                  <Link to={`/user/${sellerId}`}>{sellerName}</Link>
+                </Table.Cell>
                 <Table.Cell>{generateTime}</Table.Cell>
                 <Table.Cell>
                   <EditOrder finish={() => this.fetchData()} order={order} />
@@ -420,7 +428,9 @@ class Administer extends React.Component {
             return (
               <Table.Row negative={userState === 0} key={userId}>
                 <Table.Cell>
-                  <Header as="h2">{userName}</Header>
+                  <Header size="large" as={Link} to={`/user/${userId}`}>
+                    {userName}
+                  </Header>
                 </Table.Cell>
                 <Table.Cell>{userId}</Table.Cell>
                 <Table.Cell>{stateToText[userState]}</Table.Cell>
