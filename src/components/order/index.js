@@ -31,12 +31,62 @@ const ORDER = {
 };
 
 class Order extends React.Component {
-  state = { orders: [], loading: false };
+  state = {
+    orders: [],
+    loading: false,
+    searchTypingTimeout: 0,
+    searchOption: -1
+  };
 
   async componentDidMount() {
     await this.loadOrdersFromServer();
   }
 
+  onSearchOptionChange = (e, { value }) => {
+    this.setState({ searchOption: value });
+  };
+
+  searchOrders = e => {
+    let keyword = e.target.value;
+    if (this.state.searchTypingTimeout) {
+      clearTimeout(this.state.searchTypingTimeout);
+    }
+    this.setState({
+      searchTypingTimeout: setTimeout(() => {
+        const that = this;
+        axios
+          .post(`/api/order/search`, {
+            orderState: this.state.searchOption,
+            keyword
+          })
+          .then(async function(res) {
+            if (res.data.message === 'success') {
+              const { message, orders } = res.data;
+              if (message === 'success') {
+                that.setState({ orders });
+              } else {
+                that.props.setGlobalPortal(
+                  true,
+                  'negative',
+                  'Failure',
+                  message
+                );
+              }
+            } else {
+              this.props.setGlobalPortal(
+                true,
+                'negative',
+                'Failure',
+                res.data.message
+              );
+            }
+          })
+          .catch(function(err) {
+            console.log(err);
+          });
+      }, 500)
+    });
+  };
   async loadOrdersFromServer() {
     try {
       this.setState({ loading: true });
@@ -78,7 +128,15 @@ class Order extends React.Component {
 
   renderList() {
     return this.state.orders.map(
-      ({ orderId, orderState, generateTime, userId, goodsId }) => {
+      ({
+        orderId,
+        goodsName,
+        orderState,
+        generateTime,
+        category,
+        price,
+        goodsId
+      }) => {
         let abortOrderButton = '';
         let makeAsFinishedButton = '';
         if (orderState === ORDER.ONGOING) {
@@ -104,13 +162,21 @@ class Order extends React.Component {
         return (
           <Card fluid key={orderId}>
             <Card.Content>
-              <Card.Header>{'Order id: ' + orderId}</Card.Header>
+              <Card.Header>
+                {'Order id: ' +
+                  orderId +
+                  ' | Goods name: ' +
+                  goodsName +
+                  ' | Category: ' +
+                  category}
+              </Card.Header>
               <Card.Meta>
                 {(orderStates[orderState]
                   ? orderStates[orderState].text
                   : 'UNKNOWN') +
                   ' ' +
-                  generateTime}
+                  generateTime +
+                  ` ￥${price}`}
               </Card.Meta>
               <Card.Description>
                 <Button
@@ -136,10 +202,17 @@ class Order extends React.Component {
         <Input
           fluid
           size="large"
-          label={<Dropdown defaultValue={-1} options={orderStates} />}
+          label={
+            <Dropdown
+              defaultValue={-1}
+              options={orderStates}
+              onChange={this.onSearchOptionChange}
+            />
+          }
           labelPosition="left"
           icon="search"
-          placeholder="Search your orders..."
+          placeholder='Press "Enter" to search...'
+          onChange={this.searchOrders}
         />
         <Segment loading={this.state.loading}>{this.renderList()}</Segment>
       </Container>
