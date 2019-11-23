@@ -103,7 +103,7 @@ class Administer extends React.Component {
       if (response_of_goods.data.message === 'success') {
         this.setState({ users: response_of_users.data.users });
       }
-      console.log(this.state.orders);
+
       this.setState({ loading: false });
     } catch (e) {
       this.props.setGlobalPortal(

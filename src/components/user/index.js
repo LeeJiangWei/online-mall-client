@@ -16,6 +16,7 @@ import {
 } from 'semantic-ui-react';
 import { setGlobalPortal } from '../../actions';
 import { Link } from 'react-router-dom';
+import EditUser from '../administer/EditUser';
 
 class User extends React.Component {
   state = { status: 2, user: {}, goods: [] };
@@ -59,8 +60,28 @@ class User extends React.Component {
 
   renderUserCard() {
     const { userId, userName, address, phoneNumber } = this.state.user;
+    const isOwner =
+      this.props.user.userId.toString() === this.props.match.params.userId;
+
     return (
       <Segment>
+        <Grid>
+          <Grid.Column width={10}>
+            <Header as="h1">Information</Header>
+          </Grid.Column>
+          <Grid.Column width={6}>
+            {isOwner && (
+              <EditUser
+                finish={() => this.fetchData()}
+                user={this.state.user}
+                floated="right"
+                disableState
+              />
+            )}
+          </Grid.Column>
+        </Grid>
+
+        <Divider />
         <Grid columns={2}>
           <Grid.Column width={8}>
             <Image
@@ -152,12 +173,27 @@ class User extends React.Component {
     };
     return (
       <Segment>
-        <Header as="h2">Selling goods</Header>
-        {isOwner && (
-          <Button as={Link} to="/goods/new">
-            New
-          </Button>
-        )}
+        <Grid>
+          <Grid.Column width={12}>
+            <Header as="h2">Selling goods</Header>
+          </Grid.Column>
+          <Grid.Column width={4}>
+            {isOwner && (
+              <Button
+                floated="right"
+                animated="fade"
+                as={Link}
+                to="/goods/new"
+                primary
+              >
+                <Button.Content hidden>New</Button.Content>
+                <Button.Content visible>
+                  <Icon name="plus" />
+                </Button.Content>
+              </Button>
+            )}
+          </Grid.Column>
+        </Grid>
         <Divider />
         <Item.Group>
           {this.state.goods.length === 0 ? (

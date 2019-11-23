@@ -234,7 +234,12 @@ class EditGoods extends React.Component {
                   <Icon name="undo" />
                 </Button.Content>
               </Button>
-              <Button animated="fade" size="large" onClick={this.submitData}>
+              <Button
+                animated="fade"
+                size="large"
+                color="green"
+                onClick={this.submitData}
+              >
                 <Button.Content hidden>SUBMIT</Button.Content>
                 <Button.Content visible>
                   <Icon name="send" />
