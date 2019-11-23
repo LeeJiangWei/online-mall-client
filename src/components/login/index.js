@@ -14,7 +14,7 @@ import Register from './Register';
 import { login, setGlobalPortal, getStatus } from '../../actions';
 
 class Login extends React.Component {
-  state = { username: '', password: '' };
+  state = { username: '', password: '', show: false };
 
   componentDidMount() {
     if (this.props.isLogin) {
@@ -35,7 +35,6 @@ class Login extends React.Component {
       );
 
       if (message === 'success') {
-        //window.alert('Login successfully!');
         this.props.getStatus();
         this.props.setGlobalPortal(
           true,
@@ -48,7 +47,6 @@ class Login extends React.Component {
         this.props.setGlobalPortal(true, 'negative', 'Failure', message);
       }
     } catch (e) {
-      //console.log(e;
       this.props.setGlobalPortal(
         true,
         'negative',
@@ -85,10 +83,16 @@ class Login extends React.Component {
                 icon="lock"
                 iconPosition="left"
                 placeholder="Password"
-                type="password"
+                type={`${this.state.show ? null : 'password'}`}
                 name="password"
                 value={this.state.password}
                 onChange={this.onInputChange}
+              />
+              <Form.Checkbox
+                name="show"
+                label="Show password"
+                onChange={() => this.setState({ show: !this.state.show })}
+                checked={this.state.show}
               />
               <Button color="teal" fluid size="large" onClick={this.onSubmit}>
                 Login
