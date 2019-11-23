@@ -10,8 +10,11 @@ class EditUser extends React.Component {
     this.state = { ...props.user, modalOpen: false, processing: false };
   }
 
-  static getDerivedStateFromProps(props) {
-    return { ...props.user };
+  static getDerivedStateFromProps(nextProps, prevProps) {
+    if (nextProps.userId === prevProps.userId) {
+      return { ...nextProps.user };
+    }
+    return null;
   }
 
   handleOpen = () => this.setState({ modalOpen: true });
