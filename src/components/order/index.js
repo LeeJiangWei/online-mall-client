@@ -7,6 +7,7 @@ import {
   Card,
   Segment,
   Button,
+  Menu,
   Icon
 } from 'semantic-ui-react';
 
@@ -33,7 +34,8 @@ class Order extends React.Component {
     orders: [],
     loading: false,
     searchTypingTimeout: 0,
-    searchOption: -1
+    searchOption: -1,
+    asBuyer: true
   };
 
   async componentDidMount() {
@@ -55,7 +57,8 @@ class Order extends React.Component {
         axios
           .post(`/api/order/search`, {
             orderState: this.state.searchOption,
-            keyword
+            keyword,
+            asBuyer: this.state.asBuyer
           })
           .then(async function(res) {
             if (res.data.message === 'success') {
@@ -103,6 +106,10 @@ class Order extends React.Component {
     this.props.history.push(`/goods/${id}`);
   };
 
+  switchRole = () => {
+    this.setState({ asBuyer: !this.state.asBuyer });
+  };
+
   setOrderState = (id, state) => {
     const that = this;
     axios
@@ -137,7 +144,7 @@ class Order extends React.Component {
       }) => {
         let abortOrderButton = '';
         let makeAsFinishedButton = '';
-        if (orderState === ORDER.ONGOING) {
+        if (orderState === ORDER.ONGOING && this.state.asBuyer) {
           abortOrderButton = (
             <Button
               basic
@@ -206,21 +213,39 @@ class Order extends React.Component {
   render() {
     return (
       <Container>
-        <Input
-          fluid
-          size="large"
-          label={
-            <Dropdown
-              defaultValue={-1}
-              options={orderStates}
-              onChange={this.onSearchOptionChange}
-            />
-          }
-          labelPosition="left"
-          icon="search"
-          placeholder='Press "Enter" to search...'
-          onChange={this.searchOrders}
-        />
+        <Menu secondary>
+          <Menu.Item
+            key={0}
+            active={this.state.asBuyer}
+            name={'As Buyer'}
+            onClick={this.switchRole}
+          />
+          <Menu.Item
+            key={1}
+            active={!this.state.asBuyer}
+            name={'As Seller'}
+            onClick={this.switchRole}
+          />
+          <Menu.Menu position="right">
+            <Menu.Item>
+              <Input
+                size="large"
+                label={
+                  <Dropdown
+                    defaultValue={-1}
+                    options={orderStates}
+                    onChange={this.onSearchOptionChange}
+                  />
+                }
+                labelPosition="left"
+                icon="search"
+                placeholder='Press "Enter" to search...'
+                onChange={this.searchOrders}
+              />
+            </Menu.Item>
+          </Menu.Menu>
+        </Menu>
+
         <Segment vertical loading={this.state.loading}>
           {this.renderList()}
         </Segment>
