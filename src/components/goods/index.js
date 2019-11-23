@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import axios from 'axios';
 import {
   Segment,
   Statistic,
@@ -8,12 +9,12 @@ import {
   Card,
   Icon,
   Image,
-  Menu
+  Menu,
+  Input
 } from 'semantic-ui-react';
-import axios from 'axios';
 
 class Goods extends React.Component {
-  state = { goods: [], loading: false };
+  state = { goods: [], loading: false, activeItem: '', direction: 'up' };
 
   async componentDidMount() {
     await this.fetchData();
@@ -38,20 +39,63 @@ class Goods extends React.Component {
     this.props.history.push(`/goods/${id}`);
   };
 
+  onMenuClick = (e, { name }) => {
+    const { activeItem, direction, goods } = this.state;
+    console.log(name);
+    if (name !== activeItem) {
+      this.setState({
+        activeItem: name,
+        direction: 'angle up',
+        goods: _.sortBy(goods, [name])
+      });
+    } else {
+      this.setState({
+        goods: goods.reverse(),
+        direction: direction === 'angle up' ? 'angle down' : 'angle up'
+      });
+    }
+  };
+
+  handleSearch = e => {
+    const keyword = e.target.value;
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
+
+    this.timer = setTimeout(async () => {
+      try {
+        this.setState({ loading: true });
+        const { data } = await axios.post('/api/goods/search', {
+          keyword,
+          goodsState: 1
+        });
+        const { message, goods } = data;
+        if (message === 'success') {
+          this.setState({
+            goods: _.filter(goods, ({ goodsState }) => {
+              return goodsState === 1;
+            })
+          });
+        }
+        this.setState({ loading: false });
+      } catch (e) {}
+    }, 1000);
+  };
+
   renderList() {
-    return this.state.goods.map(
-      ({ goodsName, price, picture, goodsId, category }) => {
+    return _.map(
+      this.state.goods,
+      ({ goodsName, price, picture, goodsId, category, postTime }) => {
         return (
           <Grid.Column key={goodsId}>
             <Card onClick={() => this.onCardClicked(goodsId)}>
-              <Image src={picture} />
+              <Image style={{ height: '260.75px' }} src={picture} centered />
               <Card.Content>
                 <Card.Header>{goodsName}</Card.Header>
                 <Card.Meta>{category}</Card.Meta>
-                <Card.Description style={{ height: '3em' }}>
-                  Price: {price}
-                </Card.Description>
+                <Card.Description>￥ {price}</Card.Description>
               </Card.Content>
+              <Card.Content extra>Post Time: {postTime}</Card.Content>
             </Card>
           </Grid.Column>
         );
@@ -60,13 +104,25 @@ class Goods extends React.Component {
   }
 
   renderFilter() {
+    const items = ['price', 'postTime', 'category'];
+    const { activeItem, direction } = this.state;
     return (
       <Menu secondary>
-        <Menu.Item icon="x" name="home" />
-        <Menu.Item name="messages" />
-        <Menu.Item name="friends" />
+        {_.map(items, item => (
+          <Menu.Item
+            key={item}
+            icon={activeItem === item ? direction : null}
+            name={item}
+            active={activeItem === item}
+            onClick={this.onMenuClick}
+          />
+        ))}
         <Menu.Menu position="right">
-          <Menu.Item name="logout" />
+          <Input
+            icon="search"
+            onChange={this.handleSearch}
+            placeholder="Search..."
+          />
         </Menu.Menu>
       </Menu>
     );

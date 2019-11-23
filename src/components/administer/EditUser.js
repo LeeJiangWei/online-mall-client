@@ -10,6 +10,13 @@ class EditUser extends React.Component {
     this.state = { ...props.user, modalOpen: false, processing: false };
   }
 
+  static getDerivedStateFromProps(nextProps, prevProps) {
+    if (nextProps.userId === prevProps.userId) {
+      return { ...nextProps.user };
+    }
+    return null;
+  }
+
   handleOpen = () => this.setState({ modalOpen: true });
 
   handleClose = () => this.setState({ modalOpen: false });
@@ -102,6 +109,7 @@ class EditUser extends React.Component {
             placeholder="State"
             onChange={this.handleChange}
             value={userState}
+            disabled={this.props.disableState}
           />
         </Form.Group>
         <Form.TextArea
@@ -119,7 +127,11 @@ class EditUser extends React.Component {
     return (
       <Modal
         trigger={
-          <Button animated="fade" onClick={this.handleOpen}>
+          <Button
+            floated={this.props.floated}
+            animated="fade"
+            onClick={this.handleOpen}
+          >
             <Button.Content hidden>Edit</Button.Content>
             <Button.Content visible>
               <Icon name="edit" />

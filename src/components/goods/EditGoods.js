@@ -62,8 +62,14 @@ class EditGoods extends React.Component {
     const that = this;
     axios.post(submitUrl, this.state.goods).then(res => {
       if (res.data.message === 'success') {
-        this.props.setGlobalPortal(true, 'info', 'Success', 'Ok');
+        this.props.setGlobalPortal(
+          true,
+          'info',
+          'Success',
+          'Successfully update your goods.'
+        );
         that.clearData();
+        this.props.history.goBack();
       } else {
         this.props.setGlobalPortal(
           true,
@@ -228,7 +234,12 @@ class EditGoods extends React.Component {
                   <Icon name="undo" />
                 </Button.Content>
               </Button>
-              <Button animated="fade" size="large" onClick={this.submitData}>
+              <Button
+                animated="fade"
+                size="large"
+                color="green"
+                onClick={this.submitData}
+              >
                 <Button.Content hidden>SUBMIT</Button.Content>
                 <Button.Content visible>
                   <Icon name="send" />

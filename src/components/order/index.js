@@ -7,7 +7,7 @@ import {
   Card,
   Segment,
   Button,
-  Form
+  Icon
 } from 'semantic-ui-react';
 
 import { setGlobalPortal } from '../../actions';
@@ -143,7 +143,10 @@ class Order extends React.Component {
               basic
               color="red"
               onClick={() => this.setOrderState(orderId, ORDER.ABORTED)}
+              labelPosition="left"
+              icon
             >
+              <Icon name="x" />
               Abort Order
             </Button>
           );
@@ -152,7 +155,10 @@ class Order extends React.Component {
               basic
               color="green"
               onClick={() => this.setOrderState(orderId, ORDER.FINISHED)}
+              labelPosition="left"
+              icon
             >
+              <Icon name="checkmark" />
               Mark As Finished
             </Button>
           );
@@ -181,7 +187,10 @@ class Order extends React.Component {
                   basic
                   color="blue"
                   onClick={() => this.onGoodsButtonClicked(goodsId)}
+                  labelPosition="left"
+                  icon
                 >
+                  <Icon name="eye" />
                   View Good Detail
                 </Button>
                 {abortOrderButton}
