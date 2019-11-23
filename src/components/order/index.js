@@ -5,11 +5,9 @@ import {
   Dropdown,
   Input,
   Card,
-  Image,
   Segment,
   Button,
-  Grid,
-  Select
+  Form
 } from 'semantic-ui-react';
 
 import { setGlobalPortal } from '../../actions';
