@@ -13,7 +13,8 @@ import {
   Item,
   Image,
   Button,
-  Table
+  Table,
+  Dropdown
 } from 'semantic-ui-react';
 import { setGlobalPortal } from '../../actions';
 import { Link } from 'react-router-dom';
@@ -31,7 +32,8 @@ class Administer extends React.Component {
     orders: [],
     loading: false,
     direction: null,
-    column: null
+    column: null,
+    searchOption: -1
   };
 
   async componentDidMount() {
@@ -163,6 +165,52 @@ class Administer extends React.Component {
     });
   };
 
+  onSearchOptionChange = (e, { value }) => {
+    this.setState({ searchOption: value });
+  };
+
+  handleSearch = e => {
+    const keyword = e.target.value;
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
+
+    let stateString, routeString;
+    const { activeItem, searchOption } = this.state;
+    switch (activeItem) {
+      case 'Users':
+        stateString = 'userState';
+        routeString = 'user';
+        break;
+      case 'Goods':
+        stateString = 'goodsState';
+        routeString = 'goods';
+        break;
+      case 'Orders':
+        stateString = 'orderState';
+        routeString = 'order';
+        break;
+      default:
+        break;
+    }
+
+    this.timer = setTimeout(async () => {
+      try {
+        this.setState({ loading: true });
+        const { data } = await axios.post(`/api/${routeString}/search`, {
+          keyword,
+          [stateString]: searchOption
+        });
+        if (data.message === 'success') {
+          this.setState({
+            [activeItem.toLowerCase()]: data[activeItem.toLowerCase()]
+          });
+        }
+        this.setState({ loading: false });
+      } catch (e) {}
+    }, 1000);
+  };
+
   renderActionButton = (goodsState, good) => {
     switch (goodsState) {
       case 0:
@@ -214,6 +262,31 @@ class Administer extends React.Component {
   renderSelector() {
     const { activeItem } = this.state;
     const items = ['Goods', 'Orders', 'Users'];
+    const orderOptions = [
+      { key: -1, text: 'ALL', value: -1 },
+      { key: 0, text: 'FROZEN', value: 0 },
+      { key: 1, text: 'ONGOING', value: 1 },
+      { key: 2, text: 'FINISHED', value: 2 },
+      { key: 3, text: 'ABORTED', value: 3 }
+    ];
+    const goodsOptions = [
+      { key: -1, text: 'ALL', value: -1 },
+      { key: 0, text: 'FROZEN', value: 0 },
+      { key: 1, text: 'ON SALE', value: 1 },
+      { key: 2, text: 'SOLD OUT', value: 2 }
+    ];
+    const userOptions = [
+      { key: -1, text: 'ALL', value: -1 },
+      { key: 0, text: 'FROZEN', value: 0 },
+      { key: 1, text: 'NORMAL', value: 1 },
+      { key: 5, text: 'SUPER ADMIN', value: 5 }
+    ];
+    const options =
+      this.state.activeItem === 'Users'
+        ? userOptions
+        : this.state.activeItem === 'Goods'
+        ? goodsOptions
+        : orderOptions;
 
     return (
       <Menu secondary>
@@ -229,7 +302,18 @@ class Administer extends React.Component {
         })}
         <Menu.Menu position="right">
           <Menu.Item>
-            <Input icon="search" placeholder="Search..." />
+            <Input
+              icon="search"
+              onChange={this.handleSearch}
+              placeholder="Search..."
+              label={
+                <Dropdown
+                  defaultValue={-1}
+                  options={options}
+                  onChange={this.onSearchOptionChange}
+                />
+              }
+            />
           </Menu.Item>
         </Menu.Menu>
       </Menu>
@@ -314,8 +398,8 @@ class Administer extends React.Component {
       { key: 'Goods Name', value: 'goodsName' },
       { key: 'Order ID', value: 'orderId' },
       { key: 'State', value: 'orderState' },
-      { key: 'Buyer', value: 'userId' },
-      { key: 'Seller', value: 'address' },
+      { key: 'Buyer', value: 'buyerName' },
+      { key: 'Seller', value: 'sellerName' },
       { key: 'Generate Time', value: 'generateTime' }
     ];
     const { column, orders, direction } = this.state;
@@ -363,7 +447,7 @@ class Administer extends React.Component {
                     {goodsName}
                   </Header>
                 </Table.Cell>
-                <Table.Cell>{goodsId}</Table.Cell>
+                <Table.Cell>{orderId}</Table.Cell>
                 <Table.Cell>{stateToText[orderState]}</Table.Cell>
                 <Table.Cell>
                   <Link to={`/user/${buyerId}`}>{buyerName}</Link>
