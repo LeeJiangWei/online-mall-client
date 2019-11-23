@@ -56,21 +56,46 @@ class Goods extends React.Component {
     }
   };
 
+  handleSearch = e => {
+    const keyword = e.target.value;
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
+
+    this.timer = setTimeout(async () => {
+      try {
+        this.setState({ loading: true });
+        const { data } = await axios.post('/api/goods/search', {
+          keyword,
+          goodsState: 1
+        });
+        const { message, goods } = data;
+        if (message === 'success') {
+          this.setState({
+            goods: _.filter(goods, ({ goodsState }) => {
+              return goodsState === 1;
+            })
+          });
+        }
+        this.setState({ loading: false });
+      } catch (e) {}
+    }, 1000);
+  };
+
   renderList() {
     return _.map(
       this.state.goods,
-      ({ goodsName, price, picture, goodsId, category }) => {
+      ({ goodsName, price, picture, goodsId, category, postTime }) => {
         return (
           <Grid.Column key={goodsId}>
             <Card onClick={() => this.onCardClicked(goodsId)}>
-              <Image src={picture} />
+              <Image style={{ height: '260.75px' }} src={picture} centered />
               <Card.Content>
                 <Card.Header>{goodsName}</Card.Header>
                 <Card.Meta>{category}</Card.Meta>
-                <Card.Description style={{ height: '3em' }}>
-                  Price: {price}
-                </Card.Description>
+                <Card.Description>￥ {price}</Card.Description>
               </Card.Content>
+              <Card.Content extra>Post Time: {postTime}</Card.Content>
             </Card>
           </Grid.Column>
         );
