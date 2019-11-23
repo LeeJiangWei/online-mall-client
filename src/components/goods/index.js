@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import axios from 'axios';
 import {
   Segment,
   Statistic,
@@ -8,12 +9,12 @@ import {
   Card,
   Icon,
   Image,
-  Menu
+  Menu,
+  Input
 } from 'semantic-ui-react';
-import axios from 'axios';
 
 class Goods extends React.Component {
-  state = { goods: [], loading: false };
+  state = { goods: [], loading: false, activeItem: '', direction: 'up' };
 
   async componentDidMount() {
     await this.fetchData();
@@ -38,8 +39,26 @@ class Goods extends React.Component {
     this.props.history.push(`/goods/${id}`);
   };
 
+  onMenuClick = (e, { name }) => {
+    const { activeItem, direction, goods } = this.state;
+    console.log(name);
+    if (name !== activeItem) {
+      this.setState({
+        activeItem: name,
+        direction: 'angle up',
+        goods: _.sortBy(goods, [name])
+      });
+    } else {
+      this.setState({
+        goods: goods.reverse(),
+        direction: direction === 'angle up' ? 'angle down' : 'angle up'
+      });
+    }
+  };
+
   renderList() {
-    return this.state.goods.map(
+    return _.map(
+      this.state.goods,
       ({ goodsName, price, picture, goodsId, category }) => {
         return (
           <Grid.Column key={goodsId}>
@@ -60,13 +79,25 @@ class Goods extends React.Component {
   }
 
   renderFilter() {
+    const items = ['price', 'postTime', 'category'];
+    const { activeItem, direction } = this.state;
     return (
       <Menu secondary>
-        <Menu.Item icon="x" name="home" />
-        <Menu.Item name="messages" />
-        <Menu.Item name="friends" />
+        {_.map(items, item => (
+          <Menu.Item
+            key={item}
+            icon={activeItem === item ? direction : null}
+            name={item}
+            active={activeItem === item}
+            onClick={this.onMenuClick}
+          />
+        ))}
         <Menu.Menu position="right">
-          <Menu.Item name="logout" />
+          <Input
+            icon="search"
+            onChange={this.handleSearch}
+            placeholder="Search..."
+          />
         </Menu.Menu>
       </Menu>
     );
