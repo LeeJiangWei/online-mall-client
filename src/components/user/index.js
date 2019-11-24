@@ -202,7 +202,20 @@ class User extends React.Component {
                 <Icon name="x" />
                 No Good is Selling.
               </Header>
-              {isOwner && <Button primary>Sell</Button>}
+              {isOwner && (
+                <Button
+                  floated="right"
+                  animated="fade"
+                  as={Link}
+                  to="/goods/new"
+                  primary
+                >
+                  <Button.Content hidden>New</Button.Content>
+                  <Button.Content visible>
+                    <Icon name="plus" />
+                  </Button.Content>
+                </Button>
+              )}
             </Segment>
           ) : (
             _.map(this.state.goods, good => {

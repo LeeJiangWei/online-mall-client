@@ -8,7 +8,8 @@ import {
   Segment,
   Button,
   Menu,
-  Icon
+  Icon,
+  Header
 } from 'semantic-ui-react';
 
 import { setGlobalPortal } from '../../actions';
@@ -136,8 +137,23 @@ class Order extends React.Component {
       });
   };
 
+  renderBlank() {
+    return (
+      <Segment placeholder>
+        <Header icon>
+          <Icon name="x" />
+          No order.
+        </Header>
+      </Segment>
+    );
+  }
+
   renderList() {
-    return this.state.orders.map(
+    const { orders } = this.state;
+    if (orders.length === 0) {
+      return this.renderBlank();
+    }
+    return orders.map(
       ({
         orderId,
         goodsName,
