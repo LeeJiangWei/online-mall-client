@@ -18,6 +18,7 @@ import {
 import { setGlobalPortal } from '../../actions';
 import EditUser from '../administer/EditUser';
 import MyPie from './MyPie';
+import MyBar from './MyBar';
 
 class User extends React.Component {
   state = {
@@ -322,8 +323,43 @@ class User extends React.Component {
 
   renderStatistic() {
     const { goods, statistic } = this.state;
-    const myLength = goods.length;
-    const otherLength = statistic.goods.length - myLength;
+    const sellingLength = _.filter(goods, ({ goodsState }) => {
+      return goodsState === 1;
+    }).length;
+    const disabledLength = goods.length - sellingLength;
+    const otherLength = statistic.goods.length - goods.length;
+
+    const today = new Date();
+    let prevDays = new Array(5);
+
+    prevDays = _.map(prevDays, (v, i) => {
+      let date = new Date();
+      date.setTime(today.getTime() - i * 24 * 3600 * 1000);
+
+      let successNum = 0;
+      let failNum = 0;
+      if (statistic.orders.length !== 0) {
+        successNum = _.filter(
+          statistic.orders,
+          ({ generateTime, orderState }) => {
+            const temp = new Date(generateTime);
+            return date.getDay() === temp.getDay() && orderState === 2;
+          }
+        ).length;
+        failNum = _.filter(statistic.orders, ({ generateTime, orderState }) => {
+          const temp = new Date(generateTime);
+          return date.getDay() === temp.getDay() && orderState !== 2;
+        }).length;
+      }
+      return {
+        name: date.toLocaleDateString().slice(5),
+        'successful orders': successNum,
+        'failed orders': failNum
+      };
+    });
+
+    //console.log(prevDays);
+
     return (
       <Segment loading={this.state.sLoading}>
         <Header as="h3">Statistic</Header>
@@ -331,10 +367,14 @@ class User extends React.Component {
         <Container textAlign="center">
           <Statistic label="Your goods" value={goods.length} />
           <MyPie
-            data={[
-              { name: 'Your goods', value: myLength },
-              { name: 'Others', value: otherLength }
-            ]}
+            data={_.filter(
+              [
+                { name: 'Your selling goods', value: sellingLength },
+                { name: 'Your disabled goods', value: disabledLength },
+                { name: 'Others', value: otherLength }
+              ],
+              ({ value }) => value !== 0
+            )}
           />
           <Statistic
             label="Goods are successfully sold"
@@ -344,6 +384,7 @@ class User extends React.Component {
               }).length
             }
           />
+          <MyBar data={prevDays.reverse()} />
         </Container>
       </Segment>
     );

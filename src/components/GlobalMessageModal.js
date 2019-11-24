@@ -17,7 +17,7 @@ class GlobalMessageModal extends React.Component {
     if (open) {
       setTimeout(() => {
         props.setGlobalPortal(false);
-      }, 2000);
+      }, 5000);
     }
     return {
       open,

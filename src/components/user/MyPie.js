@@ -10,8 +10,7 @@ class MyPie extends React.PureComponent {
     midAngle,
     innerRadius,
     outerRadius,
-    percent,
-    index
+    percent
   }) => {
     const RADIAN = Math.PI / 180;
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
@@ -32,7 +31,7 @@ class MyPie extends React.PureComponent {
   };
 
   render() {
-    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+    const COLORS = ['#7FFF00', '#C0C0C0', '#0088FE', '#FF8042'];
     const { data } = this.props;
     return (
       <PieChart width={375} height={200}>
