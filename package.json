@@ -44,5 +44,5 @@
     "prettier": "1.18.2",
     "source-map-explorer": "^2.1.0"
   },
-  "proxy": "http://localhost:3001"
+  "proxy": "http://localhost:8001"
 }

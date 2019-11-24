@@ -75,11 +75,25 @@ class User extends React.Component {
       const response_of_goods = await axios.get('/api/goods/');
       if (response_of_goods.data.message === 'success') {
         statistic.goods = response_of_goods.data.goods;
+      } else {
+        this.props.setGlobalPortal(
+          true,
+          'negative',
+          'Failure',
+          response_of_goods.data.message
+        );
       }
 
-      const response_of_orders = await axios.get('/api/order/all');
+      const response_of_orders = await axios.get('/api/order');
       if (response_of_orders.data.message === 'success') {
         statistic.orders = response_of_orders.data.orders;
+      } else {
+        this.props.setGlobalPortal(
+          true,
+          'negative',
+          'Failure',
+          response_of_orders.data.message
+        );
       }
 
       this.setState({ sLoading: false, statistic });
@@ -343,12 +357,12 @@ class User extends React.Component {
           statistic.orders,
           ({ generateTime, orderState }) => {
             const temp = new Date(generateTime);
-            return date.getDay() === temp.getDay() && orderState === 2;
+            return date.getDate() === temp.getDate() && orderState === 2;
           }
         ).length;
         failNum = _.filter(statistic.orders, ({ generateTime, orderState }) => {
           const temp = new Date(generateTime);
-          return date.getDay() === temp.getDay() && orderState !== 2;
+          return date.getDate() === temp.getDate() && orderState !== 2;
         }).length;
       }
       return {

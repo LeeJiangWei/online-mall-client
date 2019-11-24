@@ -73,7 +73,7 @@ class Login extends React.Component {
                 fluid
                 icon="user"
                 iconPosition="left"
-                placeholder="E-mail address"
+                placeholder="Username"
                 name="username"
                 value={this.state.username}
                 onChange={this.onInputChange}
