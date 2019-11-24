@@ -352,13 +352,11 @@ class User extends React.Component {
         }).length;
       }
       return {
-        name: date.toLocaleDateString().slice(5),
+        name: date.getMonth() + 1 + '/' + date.getDate(),
         'successful orders': successNum,
         'failed orders': failNum
       };
     });
-
-    //console.log(prevDays);
 
     return (
       <Segment loading={this.state.sLoading}>
