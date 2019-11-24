@@ -1,7 +1,8 @@
 import React from 'react';
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import {
   Grid,
   Container,
@@ -15,18 +16,27 @@ import {
   Statistic
 } from 'semantic-ui-react';
 import { setGlobalPortal } from '../../actions';
-import { Link } from 'react-router-dom';
 import EditUser from '../administer/EditUser';
+import MyPie from './MyPie';
 
 class User extends React.Component {
-  state = { status: 2, user: {}, goods: [] };
+  state = {
+    status: 2,
+    user: {},
+    goods: [],
+    statistic: { goods: [], orders: [] },
+    lLoading: false,
+    sLoading: false
+  };
 
   async componentDidMount() {
     await this.fetchData();
+    await this.fetchStatisticData();
   }
 
   fetchData = async () => {
     try {
+      this.setState({ lLoading: true });
       const res = await axios.get(
         `/api/user/${this.props.match.params.userId}`
       );
@@ -44,11 +54,39 @@ class User extends React.Component {
           this.props.history.push('/');
         }
       }
+      this.setState({ lLoading: false });
     } catch (e) {
       this.props.setGlobalPortal(
         true,
         'negative',
         'Network error',
+        e.toString()
+      );
+    }
+  };
+
+  fetchStatisticData = async () => {
+    try {
+      this.setState({ sLoading: true });
+
+      let statistic = { goods: [], orders: [] };
+
+      const response_of_goods = await axios.get('/api/goods/');
+      if (response_of_goods.data.message === 'success') {
+        statistic.goods = response_of_goods.data.goods;
+      }
+
+      const response_of_orders = await axios.get('/api/order/all');
+      if (response_of_orders.data.message === 'success') {
+        statistic.orders = response_of_orders.data.orders;
+      }
+
+      this.setState({ sLoading: false, statistic });
+    } catch (e) {
+      this.props.setGlobalPortal(
+        true,
+        'negative',
+        'Network Error',
         e.toString()
       );
     }
@@ -172,7 +210,7 @@ class User extends React.Component {
       2: 'Sold out'
     };
     return (
-      <Segment>
+      <Segment loading={this.state.lLoading}>
         <Grid>
           <Grid.Column width={12}>
             <Header as="h2">Selling goods</Header>
@@ -283,12 +321,29 @@ class User extends React.Component {
   }
 
   renderStatistic() {
+    const { goods, statistic } = this.state;
+    const myLength = goods.length;
+    const otherLength = statistic.goods.length - myLength;
     return (
-      <Segment>
+      <Segment loading={this.state.sLoading}>
         <Header as="h3">Statistic</Header>
         <Divider />
         <Container textAlign="center">
-          <Statistic label="Your goods" value={this.state.goods.length} />
+          <Statistic label="Your goods" value={goods.length} />
+          <MyPie
+            data={[
+              { name: 'Your goods', value: myLength },
+              { name: 'Others', value: otherLength }
+            ]}
+          />
+          <Statistic
+            label="Goods are successfully sold"
+            value={
+              _.filter(statistic.orders, ({ orderState }) => {
+                return orderState === 2;
+              }).length
+            }
+          />
         </Container>
       </Segment>
     );
