@@ -33,7 +33,8 @@ class Administer extends React.Component {
     loading: false,
     direction: null,
     column: null,
-    searchOption: -1
+    searchOption: -1,
+    keyword: ''
   };
 
   async componentDidMount() {
@@ -115,7 +116,8 @@ class Administer extends React.Component {
     }
   }
 
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name });
+  handleItemClick = (e, { name }) =>
+    this.setState({ activeItem: name, searchOption: -1 });
 
   onActionButtonClick = async (good, nextState) => {
     try {
@@ -166,11 +168,11 @@ class Administer extends React.Component {
   };
 
   onSearchOptionChange = (e, { value }) => {
-    this.setState({ searchOption: value });
+    this.setState({ searchOption: value }, () => this.handleSearch());
   };
 
-  handleSearch = e => {
-    const keyword = e.target.value;
+  handleSearch = () => {
+    const { keyword } = this.state;
     if (this.timer) {
       clearTimeout(this.timer);
     }
@@ -208,7 +210,7 @@ class Administer extends React.Component {
         }
         this.setState({ loading: false });
       } catch (e) {}
-    }, 1000);
+    }, 500);
   };
 
   renderActionButton = (goodsState, good) => {
@@ -304,13 +306,17 @@ class Administer extends React.Component {
           <Menu.Item>
             <Input
               icon="search"
-              onChange={this.handleSearch}
+              onChange={(e, { value }) => {
+                this.setState({ keyword: value });
+                this.handleSearch();
+              }}
               placeholder="Search..."
+              value={this.state.keyword}
               label={
                 <Dropdown
-                  defaultValue={-1}
                   options={options}
                   onChange={this.onSearchOptionChange}
+                  value={this.state.searchOption}
                 />
               }
             />

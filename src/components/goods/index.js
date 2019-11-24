@@ -41,7 +41,7 @@ class Goods extends React.Component {
 
   onMenuClick = (e, { name }) => {
     const { activeItem, direction, goods } = this.state;
-    console.log(name);
+
     if (name !== activeItem) {
       this.setState({
         activeItem: name,

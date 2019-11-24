@@ -55,7 +55,6 @@ class EditGoods extends React.Component {
   };
 
   submitData = () => {
-    console.log(this.state.goods);
     const submitUrl = this.state.isCreatingNewGoods
       ? '/api/goods/add'
       : `/api/goods/${this.state.goodsId}`;

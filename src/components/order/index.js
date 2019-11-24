@@ -45,7 +45,6 @@ class Order extends React.Component {
 
   onSearchOptionChange = (e, { value }) => {
     this.setState({ searchOption: value }, () => {
-      console.log(this.state.searchOption);
       this.search();
     });
   };
