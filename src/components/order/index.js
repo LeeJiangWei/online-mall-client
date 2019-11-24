@@ -35,7 +35,8 @@ class Order extends React.Component {
     loading: false,
     searchTypingTimeout: 0,
     searchOption: -1,
-    asBuyer: true
+    asBuyer: true,
+    keyword: ''
   };
 
   async componentDidMount() {
@@ -43,51 +44,54 @@ class Order extends React.Component {
   }
 
   onSearchOptionChange = (e, { value }) => {
-    this.setState({ searchOption: value });
+    this.setState({ searchOption: value }, () => {
+      console.log(this.state.searchOption);
+      this.search();
+    });
   };
 
   searchOrders = e => {
-    let keyword = e.target.value;
+    this.setState({ keyword: e.target.value });
     if (this.state.searchTypingTimeout) {
       clearTimeout(this.state.searchTypingTimeout);
     }
     this.setState({
       searchTypingTimeout: setTimeout(() => {
-        const that = this;
-        axios
-          .post(`/api/order/search`, {
-            orderState: this.state.searchOption,
-            keyword,
-            asBuyer: this.state.asBuyer
-          })
-          .then(async function(res) {
-            if (res.data.message === 'success') {
-              const { message, orders } = res.data;
-              if (message === 'success') {
-                that.setState({ orders });
-              } else {
-                that.props.setGlobalPortal(
-                  true,
-                  'negative',
-                  'Failure',
-                  message
-                );
-              }
-            } else {
-              this.props.setGlobalPortal(
-                true,
-                'negative',
-                'Failure',
-                res.data.message
-              );
-            }
-          })
-          .catch(function(err) {
-            console.log(err);
-          });
+        this.search();
       }, 500)
     });
   };
+
+  search = () => {
+    const that = this;
+    axios
+      .post(`/api/order/search`, {
+        orderState: this.state.searchOption,
+        keyword: this.state.keyword,
+        asBuyer: this.state.asBuyer
+      })
+      .then(async function(res) {
+        if (res.data.message === 'success') {
+          const { message, orders } = res.data;
+          if (message === 'success') {
+            that.setState({ orders });
+          } else {
+            that.props.setGlobalPortal(true, 'negative', 'Failure', message);
+          }
+        } else {
+          this.props.setGlobalPortal(
+            true,
+            'negative',
+            'Failure',
+            res.data.message
+          );
+        }
+      })
+      .catch(function(err) {
+        console.log(err);
+      });
+  };
+
   async loadOrdersFromServer() {
     try {
       this.setState({ loading: true });
@@ -107,7 +111,9 @@ class Order extends React.Component {
   };
 
   switchRole = () => {
-    this.setState({ asBuyer: !this.state.asBuyer });
+    this.setState({ asBuyer: !this.state.asBuyer }, () => {
+      this.search();
+    });
   };
 
   setOrderState = (id, state) => {
@@ -232,11 +238,12 @@ class Order extends React.Component {
                 size="large"
                 label={
                   <Dropdown
-                    defaultValue={-1}
+                    value={this.state.searchOption}
                     options={orderStates}
                     onChange={this.onSearchOptionChange}
                   />
                 }
+                value={this.state.keyword}
                 labelPosition="left"
                 icon="search"
                 placeholder='Press "Enter" to search...'
