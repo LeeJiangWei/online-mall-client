@@ -138,7 +138,7 @@ class User extends React.Component {
         <Grid columns={2}>
           <Grid.Column width={8}>
             <Image
-              src="https://react.semantic-ui.com/images/wireframe/square-image.png"
+              src="https://i.loli.net/2019/11/24/GMTtxkCmQsec9Yo.jpg"
               size="small"
               rounded
             />
