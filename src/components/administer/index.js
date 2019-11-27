@@ -479,10 +479,10 @@ class Administer extends React.Component {
                 <Table.Cell>
                   <EditOrder finish={() => this.fetchData()} order={order} />
                   <DeleteModal
-                      finish={() => this.fetchData()}
-                      table="order"
-                      id={orderId}
-                    />
+                    finish={() => this.fetchData()}
+                    table="order"
+                    id={orderId}
+                  />
                 </Table.Cell>
               </Table.Row>
             );
@@ -548,11 +548,6 @@ class Administer extends React.Component {
                 <Table.Cell>{password}</Table.Cell>
                 <Table.Cell>
                   <EditUser finish={() => this.fetchData()} user={user} />
-                  <DeleteModal
-                      finish={() => this.fetchData()}
-                      table="user"
-                      id={userId}
-                    />
                 </Table.Cell>
               </Table.Row>
             );
