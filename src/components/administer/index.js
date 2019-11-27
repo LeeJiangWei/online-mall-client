@@ -23,6 +23,7 @@ import EditUser from './EditUser';
 import CreateUser from './CreateUser';
 import EditOrder from './EditOrder';
 import BlankSegment from './BlankSegment';
+import DeleteModal from './DeleteModal';
 
 class Administer extends React.Component {
   state = {
@@ -333,9 +334,9 @@ class Administer extends React.Component {
       1: 'On sale',
       2: 'Sold out'
     };
-    const {goods} = this.state;
+    const { goods } = this.state;
     if (goods.length === 0) {
-      return <BlankSegment />
+      return <BlankSegment />;
     }
     return (
       <Item.Group divided>
@@ -388,6 +389,11 @@ class Administer extends React.Component {
                       </Button.Content>
                     </Button>
                     {this.renderActionButton(goodsState, good)}
+                    <DeleteModal
+                      finish={() => this.fetchData()}
+                      table="goods"
+                      id={goodsId}
+                    />
                   </Grid.Column>
                 </Grid>
               </Item.Content>
@@ -415,7 +421,7 @@ class Administer extends React.Component {
     ];
     const { column, orders, direction } = this.state;
     if (orders.length === 0) {
-      return <BlankSegment />
+      return <BlankSegment />;
     }
     return (
       <Table singleLine selectable sortable>
@@ -472,6 +478,11 @@ class Administer extends React.Component {
                 <Table.Cell>{generateTime}</Table.Cell>
                 <Table.Cell>
                   <EditOrder finish={() => this.fetchData()} order={order} />
+                  <DeleteModal
+                      finish={() => this.fetchData()}
+                      table="order"
+                      id={orderId}
+                    />
                 </Table.Cell>
               </Table.Row>
             );
@@ -537,6 +548,11 @@ class Administer extends React.Component {
                 <Table.Cell>{password}</Table.Cell>
                 <Table.Cell>
                   <EditUser finish={() => this.fetchData()} user={user} />
+                  <DeleteModal
+                      finish={() => this.fetchData()}
+                      table="user"
+                      id={userId}
+                    />
                 </Table.Cell>
               </Table.Row>
             );
