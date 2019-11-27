@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom';
 import EditUser from './EditUser';
 import CreateUser from './CreateUser';
 import EditOrder from './EditOrder';
+import BlankSegment from './BlankSegment';
 
 class Administer extends React.Component {
   state = {
@@ -332,9 +333,13 @@ class Administer extends React.Component {
       1: 'On sale',
       2: 'Sold out'
     };
+    const {goods} = this.state;
+    if (goods.length === 0) {
+      return <BlankSegment />
+    }
     return (
       <Item.Group divided>
-        {this.state.goods.map(good => {
+        {_.map(goods, good => {
           const {
             goodsName,
             goodsId,
@@ -409,12 +414,15 @@ class Administer extends React.Component {
       { key: 'Generate Time', value: 'generateTime' }
     ];
     const { column, orders, direction } = this.state;
+    if (orders.length === 0) {
+      return <BlankSegment />
+    }
     return (
       <Table singleLine selectable sortable>
         <Table.Header>
           <Table.Row>
             {_.map(
-              columnNames.map(({ key, value }) => (
+              _.map(columnNames, ({ key, value }) => (
                 <Table.HeaderCell
                   key={key}
                   sorted={column === value ? direction : null}

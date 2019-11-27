@@ -1,7 +1,5 @@
 import React from 'react';
-import { PieChart, Pie, Cell, Tooltip, LabelList } from 'recharts';
-
-const data = [{ name: 'you', value: 400 }, { name: 'suck', value: 300 }];
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 
 class MyPie extends React.PureComponent {
   renderCustomizedLabel = ({
